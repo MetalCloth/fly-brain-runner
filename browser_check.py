@@ -12,6 +12,7 @@ from browser_pipeline import (
     ACTIONS,
     FRAME_SIZE,
     BrowserSample,
+    is_gameplay_frame,
     parse_region,
     resize_frame,
 )
@@ -36,6 +37,9 @@ if __name__ == "__main__":
     image = np.zeros((360, 640, 3), dtype=np.uint8)
     small = resize_frame(image)
     assert small.shape == (*FRAME_SIZE, 3)
+    assert not is_gameplay_frame(small)
+    small[:12, :16, 2] = 240
+    assert is_gameplay_frame(small)
     for history in (1, 4):
         model = BrowserPolicy(history=history)
         frames = torch.zeros((2, history * 3, *FRAME_SIZE), dtype=torch.float32)

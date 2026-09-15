@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
+import io
 import json
-import struct
-import zlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
 import numpy as np
+from PIL import Image
 
 
 ACTIONS = {0: "noop", 1: "left", 2: "right", 3: "jump", 4: "roll"}
@@ -81,80 +81,26 @@ def resize_frame(frame: np.ndarray, size: tuple[int, int] = FRAME_SIZE) -> np.nd
     return np.rint(resized).clip(0, 255).astype(np.uint8)
 
 
-def decode_png_rgb(data: bytes) -> np.ndarray:
-    """Decode the 8-bit RGB/RGBA PNG emitted by the browser bridge."""
+def is_gameplay_frame(frame: np.ndarray) -> bool:
+    """Recognize the active game from its blue pause HUD in the top-left."""
 
-    signature = b"\x89PNG\r\n\x1a\n"
-    if not data.startswith(signature):
-        raise ValueError("screen capture did not return a PNG")
-    offset = len(signature)
-    width = height = color_type = bit_depth = interlace = None
-    compressed = bytearray()
-    while offset + 12 <= len(data):
-        length = struct.unpack(">I", data[offset : offset + 4])[0]
-        chunk_type = data[offset + 4 : offset + 8]
-        chunk = data[offset + 8 : offset + 8 + length]
-        offset += 12 + length
-        if chunk_type == b"IHDR":
-            width, height, bit_depth, color_type, _, _, interlace = struct.unpack(
-                ">IIBBBBB", chunk
-            )
-        elif chunk_type == b"IDAT":
-            compressed.extend(chunk)
-        elif chunk_type == b"IEND":
-            break
-    if (
-        width is None
-        or height is None
-        or bit_depth != 8
-        or color_type not in (2, 6)
-        or interlace != 0
-    ):
-        raise ValueError("grim PNG must be non-interlaced 8-bit RGB or RGBA")
+    if frame.ndim != 3 or frame.shape[2] != 3:
+        raise ValueError(f"expected HxWx3 RGB frame, got {frame.shape}")
+    hud = frame[: max(1, frame.shape[0] // 6), : max(1, frame.shape[1] // 7)]
+    red, green, blue = (hud[:, :, channel].astype(np.int16) for channel in range(3))
+    blue_pixels = (blue > 120) & (blue > red * 1.15) & (blue > green * 1.05)
+    # ponytail: color gate; use a template/DOM state detector if Poki changes its HUD.
+    return int(blue_pixels.sum()) >= 25
 
-    channels = 3 if color_type == 2 else 4
-    row_bytes = width * channels
-    raw = zlib.decompress(bytes(compressed))
-    expected = height * (row_bytes + 1)
-    if len(raw) != expected:
-        raise ValueError(f"unexpected PNG payload size: {len(raw)} != {expected}")
 
-    rows: list[bytes] = []
-    previous = bytearray(row_bytes)
-    cursor = 0
-    for _ in range(height):
-        filter_type = raw[cursor]
-        cursor += 1
-        encoded = raw[cursor : cursor + row_bytes]
-        cursor += row_bytes
-        current = bytearray(row_bytes)
-        for index, value in enumerate(encoded):
-            left = current[index - channels] if index >= channels else 0
-            above = previous[index]
-            upper_left = previous[index - channels] if index >= channels else 0
-            if filter_type == 0:
-                prediction = 0
-            elif filter_type == 1:
-                prediction = left
-            elif filter_type == 2:
-                prediction = above
-            elif filter_type == 3:
-                prediction = (left + above) // 2
-            elif filter_type == 4:
-                estimate = left + above - upper_left
-                distances = (
-                    abs(estimate - left),
-                    abs(estimate - above),
-                    abs(estimate - upper_left),
-                )
-                prediction = (left, above, upper_left)[distances.index(min(distances))]
-            else:
-                raise ValueError(f"unsupported PNG filter type {filter_type}")
-            current[index] = (value + prediction) & 0xFF
-        rows.append(bytes(current))
-        previous = current
-    pixels = np.frombuffer(b"".join(rows), dtype=np.uint8).reshape(height, width, channels)
-    return pixels[:, :, :3].copy()
+def decode_image_rgb(data: bytes) -> np.ndarray:
+    """Decode a browser image quickly into an RGB NumPy array."""
+
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            return np.asarray(image.convert("RGB"), dtype=np.uint8).copy()
+    except (OSError, ValueError) as error:
+        raise ValueError("browser capture did not return a readable image") from error
 
 
 @dataclass(frozen=True)
@@ -171,8 +117,8 @@ class BrowserSample:
 def load_frame(path: Path) -> np.ndarray:
     """Load and validate one recorder-produced 72x128 RGB frame (H x W)."""
 
-    if path.suffix.lower() == ".png":
-        frame = resize_frame(decode_png_rgb(path.read_bytes()))
+    if path.suffix.lower() in {".jpg", ".jpeg", ".png"}:
+        frame = resize_frame(decode_image_rgb(path.read_bytes()))
     else:
         frame = np.load(path, allow_pickle=False)
     if frame.shape != (*FRAME_SIZE, 3) or frame.dtype != np.uint8:

@@ -666,8 +666,8 @@ game page (including its iframe) with screenshots, trains a separate
 five-action policy, and keeps live control watch-only unless `--execute` is
 explicitly supplied. Browser frames preserve Poki's 16:9 game view as
 `128x72` RGB inputs with smooth downsampling, and training mirrors frames while
-swapping left/right labels. This works on Wayland/Hyprland without global X11
-key capture.
+swapping left/right labels. Menu/result frames are filtered using the active
+game HUD. This works on Wayland/Hyprland without global X11 key capture.
 
 Install the browser bridge once:
 

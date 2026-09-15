@@ -20,7 +20,7 @@ from browser_cdp import (
     parse_clip,
 )
 from browser_model import BrowserPolicy
-from browser_pipeline import ACTIONS, decode_png_rgb, resize_frame
+from browser_pipeline import ACTIONS, decode_image_rgb, is_gameplay_frame, resize_frame
 
 
 def load_policy(path: Path) -> tuple[BrowserPolicy, int]:
@@ -123,7 +123,31 @@ def main() -> None:
                 if stop:
                     break
                 tick = time.monotonic()
-                frame = resize_frame(decode_png_rgb(page.capture_png(clip)))
+                frame = resize_frame(decode_image_rgb(page.capture_image(clip)))
+                if not is_gameplay_frame(frame):
+                    frames.clear()
+                    log.write(
+                        json.dumps(
+                            {
+                                "step": step,
+                                "action": 0,
+                                "action_name": ACTIONS[0],
+                                "sent": False,
+                                "state": "inactive",
+                                "captured_at": time.time(),
+                            }
+                        )
+                        + "\n"
+                    )
+                    log.flush()
+                    print(f"step={step:04d} gated state=inactive; no input sent")
+                    next_tick += period
+                    remaining = next_tick - time.monotonic()
+                    if remaining > 0:
+                        time.sleep(remaining)
+                    else:
+                        next_tick = time.monotonic()
+                    continue
                 frames.append(frame)
                 while len(frames) < history:
                     frames.appendleft(frame.copy())

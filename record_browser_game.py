@@ -18,7 +18,13 @@ from browser_cdp import (
     BrowserPage,
     parse_clip,
 )
-from browser_pipeline import ACTIONS, FRAME_SIZE, decode_png_rgb, resize_frame
+from browser_pipeline import (
+    ACTIONS,
+    FRAME_SIZE,
+    decode_image_rgb,
+    is_gameplay_frame,
+    resize_frame,
+)
 
 
 def session_directory(root: Path) -> Path:
@@ -120,9 +126,20 @@ def main() -> None:
             try:
                 while time.monotonic() < deadline and not stop:
                     tick = time.monotonic()
-                    png = page.capture_png(clip)
+                    image = page.capture_image(clip)
                     # Validate/decode once here so bad browser output never enters the dataset.
-                    frame = resize_frame(decode_png_rgb(png))
+                    frame = resize_frame(decode_image_rgb(image))
+                    if not is_gameplay_frame(frame):
+                        last_action = 0
+                        last_key = ""
+                        last_event = 0.0
+                        next_tick += period
+                        remaining = next_tick - time.monotonic()
+                        if remaining > 0:
+                            time.sleep(remaining)
+                        else:
+                            next_tick = time.monotonic()
+                        continue
                     age_ms = (tick - last_event) * 1000.0
                     action = (
                         last_action
