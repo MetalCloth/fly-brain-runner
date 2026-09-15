@@ -1,5 +1,198 @@
 # Fly-Brain Runner
 
+## Start here if you are new
+
+This repository is a safe research sandbox for teaching a small visual model
+to play an endless-runner-style game. It is **not** the Subway Surfers app,
+and the current model is **not** a real-game bot.
+
+### The one-sentence explanation
+
+We made a repeatable toy game, trained controllers inside it, and connected a
+small visual front-end to a fixed fruit-fly-inspired neural graph. We test the
+model on new, unseen simulator layouts so we can catch overfitting.
+
+### What works right now
+
+- The simulator has three lanes, trains, barriers, tunnels, ramps, gaps,
+  coins, and several power-ups.
+- The selected model reads simulator pixels and chooses `noop`, `left`,
+  `right`, `jump`, `roll`, or `hoverboard`.
+- Training has deterministic seeds and held-out evaluation bands.
+- The browser viewer shows the model acting in the toy game.
+- The Android tool can inspect real phone screenshots in **watch-only mode**.
+
+### What does not work yet
+
+- The model has not learned Subway Surfers' real visual appearance.
+- The current workflow sends no model actions to a phone.
+- A phone screenshot prediction is not a real-game score.
+- Real-game adaptation and a faster screen-capture path are still required.
+
+## The pipeline in plain English
+
+```mermaid
+flowchart LR
+    A["Toy endless-runner simulator"] --> B["Teacher labels a sensible action"]
+    B --> C["CNN visual adapter: the eyes"]
+    C --> D["Fixed fly-inspired graph: the brain"]
+    D --> E["Action head: maps features to actions"]
+    E --> F["noop / left / right / jump / roll / hoverboard"]
+    F --> A
+    G["Real phone screenshot"] -. "watch-only observation" .-> C
+```
+
+The loop is always:
+
+```text
+see a frame → choose an action → update the world → receive reward → repeat
+```
+
+“Endless” describes the track. For training, we split it into short episodes
+(normally 300 steps) so an experiment can reset and be reproduced.
+
+## The three parts people often mix up
+
+Think of the model as eyes, brain, and hands:
+
+1. **CNN / visual adapter — the eyes:** turns an 84×84 pixel frame into 21
+   compact visual signals.
+2. **Fly graph — the brain:** passes those signals through a fixed slice of the
+   published MaleCNS topology: 196 selected neurons and 247 directed edges.
+   This is a connectome-inspired engineering model, not the whole fly brain.
+3. **Action head — the hands:** reads 84 graph output features and converts
+   them into six action scores. It is connected to the graph, but it is not the
+   CNN and it is not the fly graph itself.
+
+The selected path is therefore:
+
+```text
+84×84×6 pixels → 21 retina values → 196-neuron/247-edge graph
+               → 84 graph features → action head → one of 6 actions
+```
+
+## Important words without the jargon
+
+- **Environment:** the game world. It accepts an action, moves one step, and
+  returns what happened and a reward.
+- **Observation:** what the model sees; here it can be numbers or pixels.
+- **Seed:** a number that creates one obstacle layout. A new seed is a new
+  test situation.
+- **Teacher:** a hand-written simulator policy that provides reference actions.
+  It helps bootstrap learning; it is not the fly graph.
+- **Behavior cloning:** copying the teacher's examples.
+- **DAgger:** collecting examples specifically from situations where the
+  learner makes mistakes, then teaching those corrections.
+- **PPO:** a trial-and-error reinforcement-learning algorithm that changes a
+  policy using rewards from the environment. PPO experiments exist here, but
+  the selected fly checkpoint is mainly a visual imitation/DAgger result.
+- **Recurrent:** a model with memory of previous frames. Recurrent alternatives
+  are retained as experiments; the selected retina path is the current graph
+  candidate.
+
+## Honest current status
+
+The selected checkpoint is
+`results/fly_cns_retina_v1/fly_cns_retina_best.pt`.
+
+These are 100-episode held-out **simulator** results, not Subway Surfers
+results:
+
+| simulator profile | mean steps | collision rate |
+| --- | ---: | ---: |
+| standard | 297.7 | 1% |
+| dense | 284.6 | 10% |
+| fast | 293.1 | 6% |
+| surprise | 295.1 | 4% |
+
+The `surprise` profile is kept out of training. The full experiment history,
+rejected candidates, and promotion rules are in `docs/experiment-log.md`.
+
+## Quick start
+
+From the project folder, create the environment once:
+
+```bash
+python3 -m venv .venv
+./.venv/bin/python -m pip install -r requirements.txt
+```
+
+The simulator core is dependency-free. The virtual environment adds
+Gymnasium, CPU-only PyTorch, and Stable-Baselines3 for learning scripts.
+
+Run basic checks:
+
+```bash
+python3 tests.py
+./.venv/bin/python gym_check.py
+./.venv/bin/python pixel_check.py
+./.venv/bin/python fly_cns_hybrid_check.py
+```
+
+Watch the selected model in the local browser viewer:
+
+```bash
+./.venv/bin/python play_model.py --rich --full-view --fly-cns-retina \
+  --model results/fly_cns_retina_v1/fly_cns_retina_best.pt --open
+```
+
+Evaluate it on seed ranges that were not used for training:
+
+```bash
+./.venv/bin/python evaluate_fly_cns_retina.py \
+  results/fly_cns_retina_v1/fly_cns_retina_best.pt \
+  --episodes 100 --seed-start 5000 --seed-start 6000 \
+  --seed-start 7000 --seed-start 8000
+```
+
+## How learning is organized
+
+1. Prove the simulator is solvable with a hand-written teacher.
+2. Train a pixel policy with behavior cloning and DAgger.
+3. Feed the learned visual signals into the fixed fly graph.
+4. Evaluate on seed ranges never used for training.
+5. Keep a candidate only when its collision, survival, and pickup metrics pass
+   the promotion gate.
+
+## Project map
+
+- `env.py`, `gym_env.py` — game rules and Gymnasium adapters.
+- `play_model.py` — local browser viewer.
+- `train_visual_teacher.py`, `train_fly_cns_retina.py` — visual and graph-path
+  training.
+- `evaluate_fly_cns_retina.py` — held-out evaluation and promotion gate.
+- `male_cns_neuron_graph.py` — fixed 196-neuron/247-edge graph.
+- `data/` — reduced connectome manifests and body annotations.
+- `results/fly_cns_retina_v1/` — selected simulator checkpoint.
+- `docs/` — detailed environment, experiment, connectome, and Android notes.
+
+## Real-phone boundary
+
+The current checkpoint can be run against Android screenshots only as an
+observer. It predicts an action and logs it, but sends no taps, swipes, key
+events, purchases, or ad interactions. This is intentional: the model was
+trained on the toy renderer and phone capture is not yet fast enough for a
+reliable full-speed controller.
+
+With USB debugging enabled and the phone connected:
+
+```bash
+./.venv/bin/python watch_android_fly.py \
+  results/fly_cns_retina_v1/fly_cns_retina_best.pt \
+  --serial YOUR_DEVICE_SERIAL --crop 0,0,1220,2712 --steps 20 \
+  --log results/android_observation/fly_watch_only.jsonl
+```
+
+Replace `YOUR_DEVICE_SERIAL` with the value shown by `adb devices`. The output
+means “what the model would choose,” not “what the phone executed.”
+
+## Read next
+
+1. `docs/goal-rich-subway-visual-env.md` — simulator scope and limitations.
+2. `docs/male-cns-subgraph.md` — connectome source and reduction.
+3. `docs/experiment-log.md` — experiments, failures, and selection decisions.
+4. `docs/android-testing.md` — screenshot calibration and watch-only testing.
+
 Milestone 0 is a tiny, dependency-free Subway-Surfers-like environment. It is
 not the real Subway Surfers app. It gives us a stable world to test before the
 fly connectome enters the project.
@@ -421,10 +614,10 @@ capture one frame, and calibrate the game viewport and swipe geometry:
 ./.venv/bin/python run_android_policy.py results/male_cns_neuron_plastic_50k/male_cns_neuron_plastic_recurrent_ppo.zip --crop left,top,width,height
 ```
 
-`run_android_policy.py` is a dry run by default. `--execute` is intentionally
-required before it sends any swipe to the device. Real-game adaptation and
-the first live test begin only after the screenshot has been inspected and the
-viewport mapping is agreed.
+`run_android_policy.py` is a dry run by default and is retained for older PPO
+checkpoints. Its optional input path is for future guarded experiments; do not
+use `--execute` with a real phone in this project snapshot. Real-game
+adaptation starts with screenshot inspection and watch-only validation.
 
 The current selected fly checkpoint is a custom PyTorch .pt graph policy, not
 the older recurrent PPO .zip expected by run_android_policy.py. Use the
@@ -451,10 +644,10 @@ clicking through the game screens by hand:
   --crop 0,0,1220,2712 --steps 30
 ```
 
-This observes the currently open screen and sends no phone input. Add
-`--execute` only for a bounded live session. In execute mode the wrapper
-force-stops and relaunches Subway Surfers before each episode, taps the Play
-area, refuses to swipe on a menu or dimmed/popup screen, and writes action
+This observes the currently open screen and sends no phone input. The current
+workflow does not use `--execute`; the wrapper's optional input path is retained
+only for future guarded experiments. In that future mode it can force-stop and
+relaunch Subway Surfers, gate on the visible screen state, and write action
 metadata to `results/android_sessions/`. Frames are not saved unless
 `--save-frames` is supplied. This is lifecycle automation, not a claim that
 the toy-trained checkpoint understands the real game's visuals.

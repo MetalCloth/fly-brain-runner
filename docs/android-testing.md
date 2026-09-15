@@ -1,5 +1,8 @@
 # Android testing boundary
 
+> **Current workflow:** screenshots and predictions only. This project snapshot
+> does not send phone input. Do not use an `--execute` flag with a real phone.
+
 The local controller now has a small ADB bridge, but the phone stage is
 deliberately gated. The current checkpoint was trained on the 84x84 toy
 renderer; it is not expected to understand Subway Surfers screenshots without
@@ -13,6 +16,9 @@ viewport calibration and visual adaptation.
 - translate the five local actions into no-op or swipe gestures;
 - tap a coordinate, send a key event, force-stop an app, and launch an
   explicit activity for session setup and recovery.
+
+Those input and lifecycle methods exist for future guarded work; the current
+workflow uses only screenshot capture and watch-only inference.
 
 `run_android_policy.py` decodes each screenshot with FFmpeg, crops and resizes
 it to 84x84 RGB, runs the recurrent checkpoint, and prints the selected action.
@@ -35,13 +41,12 @@ six-channel near-field view expected by the fly model, prints the top action
 and confidence, and appends JSONL telemetry. Main-menu predictions are only
 pipeline checks, not evidence of real-game competence.
 
-## Supervised session wrapper
+## Session wrapper (dry-run only in this snapshot)
 
-`run_android_session.py` handles the repetitive phone lifecycle while keeping
-the live run bounded and visible. It can force-stop and relaunch the app,
-capture a stable menu reference, tap the Play area, gate actions on the screen
-state, stop when the screen becomes a menu or dimmed popup, and write one JSON
-line per decision. It does not save PNGs unless `--save-frames` is requested.
+`run_android_session.py` contains lifecycle and safety-gate code for future
+bounded experiments. In this snapshot use it only to inspect the current
+screen and write telemetry; it does not save PNGs unless `--save-frames` is
+requested.
 
 Dry-run against the current screen:
 
@@ -51,20 +56,10 @@ Dry-run against the current screen:
   --crop 0,0,1220,2712 --steps 30
 ```
 
-Bounded live session, only after the viewport and model input have been
-checked:
-
-```bash
-./.venv/bin/python run_android_session.py \
-  results/male_cns_neuron_plastic_50k/male_cns_neuron_plastic_recurrent_ppo.zip \
-  --crop 0,0,1220,2712 --steps 30 --episodes 1 --execute
-```
-
-`--execute` is the explicit permission switch for phone input. Each execute
-episode starts from a fresh app process, so the next run does not require
-manually pressing Quit, Leave, or Play. The supervisor is still a test harness:
-it does not make the toy-trained checkpoint understand real Subway Surfers.
-The real visual adapter remains a separate preparation step.
+The code contains an explicit live-input path for future supervised work, but
+that path is outside the current project boundary. Do not add `--execute` to
+the command above. The wrapper is still only a test harness; it does not make
+the toy-trained checkpoint understand real Subway Surfers.
 
 The current PNG capture path is not yet fast enough for a full-speed
 unattended run: five device captures measured about 9 seconds on the connected
@@ -72,8 +67,9 @@ phone. Treat the session wrapper as lifecycle and safety preparation until a
 lower-latency screen stream or smaller device-side capture path is added.
 
 For visual adaptation data, `capture_android_sequence.py` records full PNG
-frames and a JSONL file containing the scripted action beside each frame. It
-also remains a dry run unless `--execute` is present:
+frames and a JSONL file containing the scripted action beside each frame. Use
+it in dry-run mode in this snapshot; do not add `--execute` to a real-phone
+command:
 
 ```bash
 ./.venv/bin/python capture_android_sequence.py \
@@ -107,12 +103,9 @@ inspection or adaptation.
      --crop left,top,width,height --steps 10
    ```
 
-7. Check the printed actions and the swipe geometry before using
-   `--execute`. The default swipe starts at 72% of the display height and
-   spans 22% horizontally or 18% vertically; adjust these with
-   `--swipe-y-fraction`, `--horizontal-fraction`, and
-   `--vertical-fraction` if the phone's game layout needs it. The first
-   executed run should be short and supervised.
+7. Check the printed actions and crop metadata. These predictions are not
+   evidence of real-game competence, and the current workflow sends no phone
+   input.
 
 ## Interpretation rule
 
@@ -128,8 +121,8 @@ its graph manifest remain local; no phone data is uploaded by these scripts.
 ## Observed device smoke test
 
 On 2026-09-15 the connected device was a Motorola Edge 60 Pro at 1220x2712,
-with `com.kiloo.subwaysurf` in the foreground. The five-action smoke test
-successfully reached the ADB gesture path and printed five left actions, but
-the run returned to the game menu. That verifies command delivery only; it is
-not a gameplay result because the checkpoint was still receiving raw real-game
-pixels despite being trained on the toy renderer.
+with `com.kiloo.subwaysurf` in the foreground. Read-only captures verified the
+screen-size check, screenshot decoding, near-field packing, checkpoint loading,
+and telemetry logging. Predictions on the menu and a manually started run are
+not gameplay results because the checkpoint was trained on the toy renderer and
+no model action was executed.
