@@ -18,7 +18,7 @@ from browser_cdp import (
     BrowserPage,
     parse_clip,
 )
-from browser_pipeline import ACTIONS, decode_png_rgb, resize_nearest
+from browser_pipeline import ACTIONS, FRAME_SIZE, decode_png_rgb, resize_frame
 
 
 def session_directory(root: Path) -> Path:
@@ -122,7 +122,7 @@ def main() -> None:
                     tick = time.monotonic()
                     png = page.capture_png(clip)
                     # Validate/decode once here so bad browser output never enters the dataset.
-                    frame = resize_nearest(decode_png_rgb(png))
+                    frame = resize_frame(decode_png_rgb(png))
                     age_ms = (tick - last_event) * 1000.0
                     action = (
                         last_action
@@ -166,6 +166,7 @@ def main() -> None:
                     "finished_at": time.time(),
                     "frames": frame_count,
                     "fps_target": args.fps,
+                    "frame_size": list(FRAME_SIZE),
                     "clip": clip,
                     "action_window_ms": args.action_window_ms,
                     "actions": dict(counts),

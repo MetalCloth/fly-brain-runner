@@ -664,8 +664,10 @@ For the online Poki version, use the browser pipeline rather than the Android
 scripts. It opens a controlled Brave window, records key events inside the
 game page (including its iframe) with screenshots, trains a separate
 five-action policy, and keeps live control watch-only unless `--execute` is
-explicitly supplied. This works on Wayland/Hyprland without global X11 key
-capture.
+explicitly supplied. Browser frames preserve Poki's 16:9 game view as
+`128x72` RGB inputs with smooth downsampling, and training mirrors frames while
+swapping left/right labels. This works on Wayland/Hyprland without global X11
+key capture.
 
 Install the browser bridge once:
 

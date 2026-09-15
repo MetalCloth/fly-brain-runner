@@ -20,7 +20,7 @@ from browser_cdp import (
     parse_clip,
 )
 from browser_model import BrowserPolicy
-from browser_pipeline import ACTIONS, decode_png_rgb, resize_nearest
+from browser_pipeline import ACTIONS, decode_png_rgb, resize_frame
 
 
 def load_policy(path: Path) -> tuple[BrowserPolicy, int]:
@@ -123,7 +123,7 @@ def main() -> None:
                 if stop:
                     break
                 tick = time.monotonic()
-                frame = resize_nearest(decode_png_rgb(page.capture_png(clip)))
+                frame = resize_frame(decode_png_rgb(page.capture_png(clip)))
                 frames.append(frame)
                 while len(frames) < history:
                     frames.appendleft(frame.copy())

@@ -13,7 +13,7 @@ import numpy as np
 
 
 ACTIONS = {0: "noop", 1: "left", 2: "right", 3: "jump", 4: "roll"}
-FRAME_SIZE = (84, 84)
+FRAME_SIZE = (72, 128)
 
 
 def parse_region(value: str) -> tuple[int, int, int, int]:
@@ -34,8 +34,8 @@ def parse_region(value: str) -> tuple[int, int, int, int]:
     return parts
 
 
-def resize_nearest(frame: np.ndarray, size: tuple[int, int] = FRAME_SIZE) -> np.ndarray:
-    """Resize an RGB frame without adding an image dependency."""
+def resize_frame(frame: np.ndarray, size: tuple[int, int] = FRAME_SIZE) -> np.ndarray:
+    """Resize RGB data with area averaging or bilinear edge-safe sampling."""
 
     if frame.ndim != 3 or frame.shape[2] != 3:
         raise ValueError(f"expected HxWx3 RGB frame, got {frame.shape}")
@@ -43,17 +43,46 @@ def resize_nearest(frame: np.ndarray, size: tuple[int, int] = FRAME_SIZE) -> np.
     target_height, target_width = size
     if height < 1 or width < 1 or target_height < 1 or target_width < 1:
         raise ValueError("frame and target dimensions must be positive")
-    rows = np.minimum(
-        (np.arange(target_height) * height // target_height), height - 1
+    if (height, width) == (target_height, target_width):
+        return frame.astype(np.uint8, copy=True)
+
+    if (
+        height >= target_height
+        and width >= target_width
+        and height % target_height == 0
+        and width % target_width == 0
+    ):
+        y_scale = height // target_height
+        x_scale = width // target_width
+        blocks = frame.reshape(
+            target_height, y_scale, target_width, x_scale, 3
+        )
+        return np.rint(blocks.mean(axis=(1, 3))).astype(np.uint8)
+
+    y_positions = (np.arange(target_height, dtype=np.float32) + 0.5) * height / target_height - 0.5
+    y_floor = np.floor(y_positions).astype(np.int64)
+    y_weight = np.clip(y_positions - y_floor, 0.0, 1.0)
+    y0 = np.clip(y_floor, 0, height - 1)
+    y1 = np.clip(y_floor + 1, 0, height - 1)
+    rows = (
+        frame[y0].astype(np.float32) * (1.0 - y_weight)[:, None, None]
+        + frame[y1].astype(np.float32) * y_weight[:, None, None]
     )
-    columns = np.minimum(
-        (np.arange(target_width) * width // target_width), width - 1
+
+    x_positions = (np.arange(target_width, dtype=np.float32) + 0.5) * width / target_width - 0.5
+    x_floor = np.floor(x_positions).astype(np.int64)
+    x_weight = np.clip(x_positions - x_floor, 0.0, 1.0)
+    x0 = np.clip(x_floor, 0, width - 1)
+    x1 = np.clip(x_floor + 1, 0, width - 1)
+    resized = (
+        rows[:, x0].astype(np.float32) * (1.0 - x_weight)[None, :, None]
+        + rows[:, x1].astype(np.float32) * x_weight[None, :, None]
     )
-    return frame[rows[:, None], columns[None, :]].astype(np.uint8, copy=True)
+    return np.rint(resized).clip(0, 255).astype(np.uint8)
 
 
 def decode_png_rgb(data: bytes) -> np.ndarray:
-    """Decode the 8-bit RGB/RGBA PNG emitted by grim."""
+    """Decode the 8-bit RGB/RGBA PNG emitted by the browser bridge."""
 
     signature = b"\x89PNG\r\n\x1a\n"
     if not data.startswith(signature):
@@ -140,10 +169,10 @@ class BrowserSample:
 
 
 def load_frame(path: Path) -> np.ndarray:
-    """Load and validate one recorder-produced 84x84 RGB frame."""
+    """Load and validate one recorder-produced 72x128 RGB frame (H x W)."""
 
     if path.suffix.lower() == ".png":
-        frame = resize_nearest(decode_png_rgb(path.read_bytes()))
+        frame = resize_frame(decode_png_rgb(path.read_bytes()))
     else:
         frame = np.load(path, allow_pickle=False)
     if frame.shape != (*FRAME_SIZE, 3) or frame.dtype != np.uint8:

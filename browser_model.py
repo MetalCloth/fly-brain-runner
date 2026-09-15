@@ -5,11 +5,11 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from browser_pipeline import ACTIONS
+from browser_pipeline import ACTIONS, FRAME_SIZE
 
 
 class BrowserPolicy(nn.Module):
-    """A compact 84x84 CNN with a short visual history."""
+    """A compact 72x128 CNN with a short visual history (H x W)."""
 
     def __init__(self, history: int = 4) -> None:
         if history < 1:
@@ -25,15 +25,24 @@ class BrowserPolicy(nn.Module):
             nn.ReLU(),
             nn.Flatten(),
         )
+        with torch.no_grad():
+            feature_size = self.features(
+                torch.zeros(1, 3 * history, *FRAME_SIZE)
+            ).shape[1]
         self.head = nn.Sequential(
-            nn.Linear(64 * 7 * 7, 128),
+            nn.Linear(feature_size, 128),
             nn.ReLU(),
             nn.Linear(128, len(ACTIONS)),
         )
 
     def forward(self, frames: torch.Tensor) -> torch.Tensor:
-        if frames.ndim != 4 or frames.shape[1] != self.history * 3:
+        if (
+            frames.ndim != 4
+            or frames.shape[1] != self.history * 3
+            or tuple(frames.shape[-2:]) != FRAME_SIZE
+        ):
             raise ValueError(
-                f"expected N x {self.history * 3} x H x W input, got {tuple(frames.shape)}"
+                f"expected N x {self.history * 3} x {FRAME_SIZE[0]} x {FRAME_SIZE[1]} "
+                f"input, got {tuple(frames.shape)}"
             )
         return self.head(self.features(frames / 255.0))

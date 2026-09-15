@@ -1,11 +1,21 @@
 """Check the browser pipeline tensor and action contracts."""
 
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 import numpy as np
 import torch
 
 from browser_cdp import ACTION_KEYS, KEY_ACTIONS, parse_clip
 from browser_model import BrowserPolicy
-from browser_pipeline import ACTIONS, parse_region, resize_nearest
+from browser_pipeline import (
+    ACTIONS,
+    FRAME_SIZE,
+    BrowserSample,
+    parse_region,
+    resize_frame,
+)
+from train_browser_bc import BrowserDataset
 
 
 if __name__ == "__main__":
@@ -23,12 +33,24 @@ if __name__ == "__main__":
         "ArrowDown": 4,
     }
     assert ACTION_KEYS[3] == "ArrowUp"
-    image = np.zeros((581, 1031, 3), dtype=np.uint8)
-    small = resize_nearest(image)
-    assert small.shape == (84, 84, 3)
+    image = np.zeros((360, 640, 3), dtype=np.uint8)
+    small = resize_frame(image)
+    assert small.shape == (*FRAME_SIZE, 3)
     for history in (1, 4):
         model = BrowserPolicy(history=history)
-        frames = torch.zeros((2, history * 3, 84, 84), dtype=torch.float32)
+        frames = torch.zeros((2, history * 3, *FRAME_SIZE), dtype=torch.float32)
         logits = model(frames)
         assert tuple(logits.shape) == (2, len(ACTIONS))
+    with TemporaryDirectory() as temporary:
+        frame_path = Path(temporary) / "frame.npy"
+        frame = np.zeros((*FRAME_SIZE, 3), dtype=np.uint8)
+        frame[:, 0, :] = 255
+        np.save(frame_path, frame, allow_pickle=False)
+        sample = BrowserSample((frame_path,), 2, Path(temporary), 0, 0.0)
+        dataset = BrowserDataset([sample], mirror=True)
+        original, original_action = dataset[0]
+        mirrored, mirrored_action = dataset[1]
+        assert len(dataset) == 2
+        assert original_action == 2 and mirrored_action == 1
+        assert torch.equal(original[:, :, 0], mirrored[:, :, -1])
     print("browser pipeline check passed")

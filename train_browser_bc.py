@@ -14,21 +14,34 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
 from browser_model import BrowserPolicy
-from browser_pipeline import ACTIONS, BrowserSample, load_sessions, make_samples, stack_sample
+from browser_pipeline import (
+    ACTIONS,
+    FRAME_SIZE,
+    BrowserSample,
+    load_sessions,
+    make_samples,
+    stack_sample,
+)
 
 
 class BrowserDataset(Dataset):
-    def __init__(self, samples: list[BrowserSample]) -> None:
+    def __init__(self, samples: list[BrowserSample], *, mirror: bool = False) -> None:
         self.samples = samples
+        self.mirror = mirror
 
     def __len__(self) -> int:
-        return len(self.samples)
+        return len(self.samples) * (2 if self.mirror else 1)
 
     def __getitem__(self, index: int):
-        sample = self.samples[index]
+        mirrored = self.mirror and index >= len(self.samples)
+        sample = self.samples[index % len(self.samples)]
         stack = stack_sample(sample)
+        action = sample.action
+        if mirrored:
+            stack = stack[:, ::-1, :].copy()
+            action = {1: 2, 2: 1}.get(action, action)
         tensor = torch.from_numpy(stack).permute(2, 0, 1).contiguous()
-        return tensor, sample.action
+        return tensor, action
 
 
 def split_sessions(
@@ -100,6 +113,12 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--val-fraction", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument(
+        "--mirror",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="also train on horizontally mirrored frames and swap left/right",
+    )
     args = parser.parse_args()
     if args.history < 1 or args.epochs < 1 or args.batch_size < 1:
         parser.error("history, epochs, and batch-size must be positive")
@@ -121,8 +140,9 @@ def main() -> None:
     print(f"train_actions={dict(class_counts(train_samples))}")
     print(f"val_actions={dict(class_counts(validation_samples))}")
 
+    train_dataset = BrowserDataset(train_samples, mirror=args.mirror)
     train_loader = DataLoader(
-        BrowserDataset(train_samples),
+        train_dataset,
         batch_size=args.batch_size,
         shuffle=True,
         num_workers=0,
@@ -171,7 +191,7 @@ def main() -> None:
                     "state_dict": model.state_dict(),
                     "history": args.history,
                     "actions": ACTIONS,
-                    "frame_size": [84, 84],
+                    "frame_size": list(FRAME_SIZE),
                     "best_val_macro_accuracy": best_macro,
                 },
                 checkpoint_path,
