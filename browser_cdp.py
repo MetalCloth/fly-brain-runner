@@ -7,6 +7,7 @@ import json
 import shutil
 import socket
 import subprocess
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -60,6 +61,31 @@ def _find_browser() -> str:
         if path:
             return path
     raise BrowserCdpError("could not find brave/chromium on PATH")
+
+
+def _page_target(
+    targets: list[dict[str, Any]], url: str
+) -> dict[str, Any] | None:
+    matching = next(
+        (
+            item
+            for item in targets
+            if item.get("type") == "page"
+            and item.get("webSocketDebuggerUrl")
+            and urlparse(str(item.get("url", ""))).netloc == urlparse(url).netloc
+        ),
+        None,
+    )
+    if matching is not None:
+        return matching
+    return next(
+        (
+            item
+            for item in targets
+            if item.get("type") == "page" and item.get("webSocketDebuggerUrl")
+        ),
+        None,
+    )
 
 
 ACTION_LISTENER_SOURCE = r"""
@@ -124,13 +150,32 @@ class BrowserPage:
     ) -> "BrowserPage":
         selected_port = port
         existing = _targets(selected_port)
-        if existing and not any(
-            target.get("webSocketDebuggerUrl") for target in existing
-        ):
+        process: subprocess.Popen[bytes] | None = None
+        if existing and any(target.get("webSocketDebuggerUrl") for target in existing):
+            target = _page_target(existing, url)
+            if target is not None:
+                try:
+                    return cls(
+                        str(target["webSocketDebuggerUrl"]),
+                        port=selected_port,
+                    )
+                except BrowserCdpError as error:
+                    if "Handshake status 403" not in str(error):
+                        raise
+                    # A previous browser may have been started without the
+                    # origin flag; leave it alone and use a fresh port/profile.
+                    selected_port = _free_port()
+                    profile_dir = Path(
+                        tempfile.mkdtemp(prefix="fly-brain-runner-browser-")
+                    )
+                    existing = []
+            else:
+                selected_port = _free_port()
+                existing = []
+        elif existing:
             selected_port = _free_port()
             existing = []
 
-        process: subprocess.Popen[bytes] | None = None
         if not existing:
             browser = _find_browser()
             profile_dir.mkdir(parents=True, exist_ok=True)
@@ -138,6 +183,7 @@ class BrowserPage:
                 [
                     browser,
                     f"--remote-debugging-port={selected_port}",
+                    f"--remote-allow-origins=http://127.0.0.1:{selected_port}",
                     f"--user-data-dir={profile_dir}",
                     "--new-window",
                     url,
@@ -158,31 +204,13 @@ class BrowserPage:
                 ):
                     break
                 time.sleep(0.25)
-            if not existing:
+            if not _page_target(existing, url):
                 process.kill()
                 raise BrowserCdpError(
                     f"browser did not expose CDP on 127.0.0.1:{selected_port}"
                 )
 
-        target = next(
-            (
-                item
-                for item in existing
-                if item.get("type") == "page"
-                and item.get("webSocketDebuggerUrl")
-                and urlparse(str(item.get("url", ""))).netloc == urlparse(url).netloc
-            ),
-            None,
-        )
-        if target is None:
-            target = next(
-                (
-                    item
-                    for item in existing
-                    if item.get("type") == "page" and item.get("webSocketDebuggerUrl")
-                ),
-                None,
-            )
+        target = _page_target(existing, url)
         if target is None:
             raise BrowserCdpError("no debuggable browser page was found")
         return cls(
