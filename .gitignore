@@ -2,3 +2,11 @@
 __pycache__/
 *.py[cod]
 
+# Local browser data and model runs.
+results/browser_dataset/
+results/browser_runs/
+results/browser_bc_v1/
+
+# Generated Android observation artifacts; keep the checked-in fixtures.
+results/android_observation/*.jsonl
+results/android_observation/*.png

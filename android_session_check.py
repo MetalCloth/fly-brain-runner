@@ -17,8 +17,13 @@ def main() -> None:
 
     menu_signature = screen_signature(menu)
     assert classify_screen(near_menu, menu_signature) is ScreenState.MENU
+    animated_menu = menu.copy()
+    animated_menu[:60, :, :] = 220
+    assert classify_screen(animated_menu, menu_signature) is ScreenState.MENU
     assert classify_screen(active, menu_signature) is ScreenState.ACTIVE
     assert classify_screen(blocked, menu_signature) is ScreenState.BLOCKED
+    result = np.full((84, 84, 3), 235, dtype=np.uint8)
+    assert classify_screen(result, menu_signature) is ScreenState.BLOCKED
     print("Android session gate check passed")
 
 

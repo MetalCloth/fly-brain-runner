@@ -31,7 +31,10 @@ DEFAULT_COMPONENT = (
 )
 FRAME_SHAPE = (84, 84, 3)
 MENU_DISTANCE_THRESHOLD = 0.10
+MENU_FOOTER_ROWS = 5
+MENU_FOOTER_DISTANCE_THRESHOLD = 0.14
 DIMMED_MEAN_THRESHOLD = 0.34
+RESULT_CENTER_WHITE_FRACTION = 0.25
 
 
 class ScreenState(str, Enum):
@@ -61,9 +64,19 @@ def classify_screen(
     if frame.shape != FRAME_SHAPE:
         raise ValueError(f"expected frame shape {FRAME_SHAPE}, got {frame.shape}")
     if menu_signature is not None:
-        distance = float(np.abs(screen_signature(frame) - menu_signature).mean())
-        if distance <= MENU_DISTANCE_THRESHOLD:
+        signature = screen_signature(frame)
+        distance = float(np.abs(signature - menu_signature).mean())
+        footer_distance = float(
+            np.abs(signature[-MENU_FOOTER_ROWS:] - menu_signature[-MENU_FOOTER_ROWS:]).mean()
+        )
+        if (
+            distance <= MENU_DISTANCE_THRESHOLD
+            or footer_distance <= MENU_FOOTER_DISTANCE_THRESHOLD
+        ):
             return ScreenState.MENU
+    center = frame[16:64, 8:76]
+    if float((center.min(axis=2) > 220).mean()) >= RESULT_CENTER_WHITE_FRACTION:
+        return ScreenState.BLOCKED
     if float(frame.mean()) / 255.0 < DIMMED_MEAN_THRESHOLD:
         return ScreenState.BLOCKED
     return ScreenState.ACTIVE

@@ -652,6 +652,67 @@ metadata to `results/android_sessions/`. Frames are not saved unless
 `--save-frames` is supplied. This is lifecycle automation, not a claim that
 the toy-trained checkpoint understands the real game's visuals.
 
+## Browser-game path (Poki)
+
+For the online Poki version, use the browser pipeline rather than the Android
+scripts. It records your real keyboard actions with the game image, trains a
+separate five-action policy, and keeps live control watch-only unless
+`--execute` is explicitly supplied.
+
+Install the two capture/input helpers once:
+
+```bash
+./.venv/bin/python -m pip install -r requirements.txt
+```
+
+The game rectangle is `left,top,width,height` in screen pixels. For the
+provided 1808x1018 screenshot, the starting estimate is `271,130,1031,581`;
+adjust it if the browser window moves.
+
+Record while playing manually:
+
+```bash
+./.venv/bin/python record_browser_game.py \
+  --region 271,130,1031,581 \
+  --duration 120 --fps 15 \
+  --output-dir results/browser_dataset
+```
+
+Click the game, start a run, and use `Esc` to stop recording. The recorder
+does not send game input. Use several runs, including recovery situations;
+the labels are `noop`, `left`, `right`, `jump`, and `roll`.
+
+Check and train the browser policy:
+
+```bash
+./.venv/bin/python browser_dataset_check.py --data-dir results/browser_dataset
+./.venv/bin/python train_browser_bc.py \
+  --data-dir results/browser_dataset \
+  --output-dir results/browser_bc_v1
+```
+
+Watch the learned policy before allowing it to press keys:
+
+```bash
+./.venv/bin/python run_browser_policy.py \
+  results/browser_bc_v1/browser_policy_best.pt \
+  --region 271,130,1031,581 --steps 300
+```
+
+Only after a good watch-only run, start a short live test with the game
+already active:
+
+```bash
+./.venv/bin/python run_browser_policy.py \
+  results/browser_bc_v1/browser_policy_best.pt \
+  --region 271,130,1031,581 --steps 100 --execute
+```
+
+Press `Esc` to stop. This browser checkpoint is separate from the toy-game
+checkpoint and the Android path. Reinforcement learning comes later, after
+we can reliably observe browser score/death signals; the first real step is
+human behavior cloning.
+
 ## Watch the controller locally
 
 To see the trained controller act in the toy game, run:

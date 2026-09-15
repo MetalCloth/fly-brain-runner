@@ -1,4 +1,4 @@
-"""Watch Android screenshots with the fly checkpoint without sending input."""
+"""Run the fly checkpoint on Android screenshots, watching by default."""
 
 from __future__ import annotations
 
@@ -11,9 +11,10 @@ import numpy as np
 import torch
 from gymnasium import spaces
 
-from android_bridge import AndroidBridge, parse_crop
+from android_bridge import ACTIONS, AndroidBridge, parse_crop
 from env import RICH_ACTIONS
 from run_android_policy import decode_png
+from run_android_session import ScreenState, classify_screen, screen_signature
 from train_fly_cns_retina import FlyCNSRetinaPolicy
 from train_visual_teacher import near_field_view
 
@@ -73,6 +74,16 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=1)
     parser.add_argument("--interval", type=float, default=0.15)
     parser.add_argument(
+        "--menu-reference",
+        type=Path,
+        help="menu screenshot used to prevent input outside gameplay",
+    )
+    parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="send supported model swipes after the menu gate passes",
+    )
+    parser.add_argument(
         "--log",
         type=Path,
         default=Path("results/android_observation/fly_watch_only.jsonl"),
@@ -82,6 +93,10 @@ def main() -> None:
         raise ValueError("steps must be positive and interval must be positive")
     if not args.model.is_file():
         raise FileNotFoundError(args.model)
+    if args.execute and args.menu_reference is None:
+        raise ValueError("--execute requires --menu-reference")
+    if args.menu_reference is not None and not args.menu_reference.is_file():
+        raise FileNotFoundError(args.menu_reference)
 
     bridge = AndroidBridge(serial=args.serial)
     width, height = bridge.screen_size()
@@ -89,20 +104,59 @@ def main() -> None:
     if left < 0 or top < 0 or left + crop_width > width or top + crop_height > height:
         raise ValueError("crop extends beyond the reported Android display")
     model = load_model(args.model)
+    menu_signature = None
+    if args.menu_reference is not None:
+        menu_signature = screen_signature(
+            decode_png(args.menu_reference.read_bytes(), args.crop)
+        )
     args.log.parent.mkdir(parents=True, exist_ok=True)
 
     print(
-        f"WATCH ONLY: {args.steps} screenshot(s) on {width}x{height}, "
-        f"crop={args.crop}; no phone input will be sent"
+        f"{'EXECUTE' if args.execute else 'WATCH ONLY'}: {args.steps} screenshot(s) "
+        f"on {width}x{height}, crop={args.crop}"
     )
     with args.log.open("a", encoding="utf-8") as log:
         for step in range(args.steps):
             captured_at = time.time()
             frame = decode_png(bridge.screenshot_png(), args.crop)
+            state = classify_screen(frame, menu_signature)
+            if args.execute and state is not ScreenState.ACTIVE:
+                record = {
+                    "mode": "execute",
+                    "executed": False,
+                    "input_sent": False,
+                    "state": state.value,
+                    "step": step,
+                    "screen": {"width": width, "height": height},
+                    "crop": list(args.crop),
+                    "frame_shape": list(frame.shape),
+                    "captured_at": captured_at,
+                }
+                log.write(json.dumps(record) + "\n")
+                log.flush()
+                print(f"step={step:04d} gated state={state.value}; no input sent")
+                if step + 1 < args.steps:
+                    time.sleep(args.interval)
+                continue
+
             action, confidence, top_three = predict(model, frame)
+            input_sent = False
+            action_note = None
+            if args.execute:
+                if action in ACTIONS:
+                    bridge.send_action(
+                        action,
+                        width=width,
+                        height=height,
+                    )
+                    input_sent = action != 0
+                else:
+                    action_note = "unsupported_android_action"
             record = {
-                "mode": "watch-only",
-                "executed": False,
+                "mode": "execute" if args.execute else "watch-only",
+                "executed": args.execute,
+                "input_sent": input_sent,
+                "state": state.value,
                 "step": step,
                 "action": action,
                 "action_name": RICH_ACTIONS[action],
@@ -113,11 +167,14 @@ def main() -> None:
                 "frame_shape": list(frame.shape),
                 "captured_at": captured_at,
             }
+            if action_note is not None:
+                record["note"] = action_note
             log.write(json.dumps(record) + "\n")
             log.flush()
             print(
                 f"step={step:04d} action={RICH_ACTIONS[action]} "
-                f"confidence={confidence:.3f}"
+                f"confidence={confidence:.3f} "
+                f"{'sent' if input_sent else 'no-input'}"
             )
             if step + 1 < args.steps:
                 time.sleep(args.interval)
