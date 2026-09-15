@@ -323,7 +323,8 @@ class BrowserPage:
         return {"x": 0.0, "y": 0.0, "width": float(width), "height": float(height)}
 
     def capture_png(self, clip: dict[str, float] | None = None) -> bytes:
-        params: dict[str, Any] = {"format": "png", "fromSurface": True}
+        # View capture avoids compositor flashes on headful Wayland/Brave.
+        params: dict[str, Any] = {"format": "png", "fromSurface": False}
         if clip is not None:
             params["clip"] = {**clip, "scale": 1.0}
         result = self.send("Page.captureScreenshot", params)
