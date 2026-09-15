@@ -6,7 +6,7 @@ __pycache__/
 results/browser_dataset/
 results/browser_dataset_poki/
 results/browser_runs/
-results/browser_bc_v1/
+results/browser_bc_*/
 
 # Generated Android observation artifacts; keep the checked-in fixtures.
 results/android_observation/*.jsonl
