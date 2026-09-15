@@ -688,6 +688,10 @@ use `Escape` to stop recording. The recorder does not send game input. Use
 several runs, including recovery situations; the labels are `noop`, `left`,
 `right`, `jump`, and `roll`.
 
+If startup is slow, `find_game_clip` waits up to 30 seconds. It refuses to use
+the whole browser viewport as a game frame; if auto-detection fails, rerun with
+the game's page coordinates supplied through `--clip x,y,width,height`.
+
 Check and train the browser policy:
 
 ```bash

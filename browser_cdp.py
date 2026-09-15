@@ -294,7 +294,7 @@ class BrowserPage:
             return max(1, int(parsed["width"])), max(1, int(parsed["height"]))
         raise BrowserCdpError("could not determine browser viewport")
 
-    def find_game_clip(self, timeout: float = 15.0) -> dict[str, float]:
+    def find_game_clip(self, timeout: float = 30.0) -> dict[str, float]:
         expression = r"""
         (() => {
           const candidates = [...document.querySelectorAll('iframe, canvas, video')];
@@ -320,7 +320,10 @@ class BrowserPage:
                 }
             time.sleep(0.5)
         width, height = self.viewport()
-        return {"x": 0.0, "y": 0.0, "width": float(width), "height": float(height)}
+        raise BrowserCdpError(
+            f"could not find the game canvas after {timeout:.0f}s "
+            f"(page viewport {width}x{height}); rerun with --clip x,y,width,height"
+        )
 
     def capture_image(self, clip: dict[str, float] | None = None) -> bytes:
         # No-surface JPEG capture avoids compositor flashes on headful Wayland/Brave.
