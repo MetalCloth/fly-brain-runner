@@ -1,0 +1,3342 @@
+{
+  "schema_version": 1,
+  "source": {
+    "dataset": "male-cns:v1.0",
+    "server": "https://neuprint.janelia.org",
+    "api": "https://neuprint.janelia.org/api/custom/custom",
+    "download_page": "https://male-cns.janelia.org/download/",
+    "retrieved_on": "2026-09-14"
+  },
+  "selection": {
+    "types": [
+      "R1-R6",
+      "L1",
+      "L2",
+      "L3",
+      "DNc01",
+      "DNc02"
+    ],
+    "max_neurons_per_type": 48,
+    "method": "retain the two-hop sensory-to-DNc route first, then rank by the sum of internal selected-slice edge weights; retain all DNc neurons",
+    "nodes_before_reduction": 7339,
+    "edges_before_reduction": 17640,
+    "nodes_by_type": {
+      "R1-R6": 48,
+      "L1": 48,
+      "L2": 48,
+      "L3": 48,
+      "DNc01": 2,
+      "DNc02": 2
+    }
+  },
+  "queries": {
+    "edges": "MATCH (a:Neuron)-[c:ConnectsTo]->(b:Neuron)\nWHERE a.type IN ['R1-R6', 'L1', 'L2', 'L3', 'DNc01', 'DNc02'] AND b.type IN ['R1-R6', 'L1', 'L2', 'L3', 'DNc01', 'DNc02']\nRETURN a.bodyId AS upstream_body_id,\n       a.type AS upstream_type,\n       b.bodyId AS downstream_body_id,\n       b.type AS downstream_type,\n       c.weight AS weight",
+    "nodes": "MATCH (n:Neuron)\nWHERE n.bodyId IN [10342, 10705, 11369, 14405, 16394, 16581, 17891, 18061, 18251, 18284, 18370, 18509, 18682, 19001, 19075, 19903, 20655, 20696, 20790, 20840, 20850, 20971, 21006, 21112, 21133, 21260, 21298, 21310, 21320, 21402, 21422, 21491, 21653, 21682, 22007, 22161, 22180, 22314, 22613, 22631, 22743, 22934, 23074, 23110, 23207, 23268, 23303, 23414, 23481, 23624, 23974, 24007, 24116, 24201, 24385, 24758, 24916, 24990, 25095, 25245, 25315, 25485, 25531, 25545, 25757, 25884, 26190, 26447, 26949, 26950, 27357, 27625, 28518, 28864, 29605, 29946, 30599, 30658, 30723, 30996, 31043, 32187, 32581, 32595, 33452, 34528, 34961, 35139, 37093, 37850, 39568, 43022, 43393, 45851, 46599, 46625, 46663, 49197, 49651, 50474, 51240, 54775, 56107, 58212, 61428, 62264, 63041, 63243, 65065, 67470, 70226, 75311, 77396, 78232, 78324, 79144, 79960, 81115, 81286, 81508, 82519, 82873, 83900, 86821, 88646, 89198, 95486, 97551, 99076, 99298, 101634, 106241, 110445, 111864, 114750, 117246, 120673, 125828, 126047, 127408, 128178, 131738, 131820, 132065, 140288, 145741, 149329, 153107, 161919, 162249, 187626, 202937, 213272, 220894, 220955, 223529, 225294, 229898, 231740, 235602, 237524, 238540, 244302, 244826, 254774, 288917, 384145, 512051, 512054, 512245, 513318, 515395, 516061, 516728, 516729, 519732, 532462, 532698, 533351, 533352, 534375, 540081, 540417, 543025, 545407, 547134, 547653, 548720, 550452, 550686, 550939, 551254, 555921, 556431, 556436, 953560]\nRETURN n.bodyId AS body_id,\n       n.type AS type,\n       n.instance AS instance,\n       n.somaSide AS soma_side,\n       n.pre AS pre,\n       n.post AS post\nORDER BY type, body_id"
+  },
+  "nodes": [
+    {
+      "body_id": 11369,
+      "type": "DNc01",
+      "instance": "DNc01_L",
+      "soma_side": "L",
+      "pre": 1704,
+      "post": 2170
+    },
+    {
+      "body_id": 512245,
+      "type": "DNc01",
+      "instance": "DNc01_R",
+      "soma_side": "R",
+      "pre": 1829,
+      "post": 1844
+    },
+    {
+      "body_id": 10342,
+      "type": "DNc02",
+      "instance": "DNc02(SIFa)_R",
+      "soma_side": "R",
+      "pre": 1931,
+      "post": 1995
+    },
+    {
+      "body_id": 10705,
+      "type": "DNc02",
+      "instance": "DNc02(SIFa)_L",
+      "soma_side": "L",
+      "pre": 1800,
+      "post": 1767
+    },
+    {
+      "body_id": 14405,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 110,
+      "post": 450
+    },
+    {
+      "body_id": 18251,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 119,
+      "post": 495
+    },
+    {
+      "body_id": 18284,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 131,
+      "post": 480
+    },
+    {
+      "body_id": 20790,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 134,
+      "post": 474
+    },
+    {
+      "body_id": 20840,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 124,
+      "post": 475
+    },
+    {
+      "body_id": 20850,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 172,
+      "post": 423
+    },
+    {
+      "body_id": 21298,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 141,
+      "post": 400
+    },
+    {
+      "body_id": 21320,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 132,
+      "post": 489
+    },
+    {
+      "body_id": 21402,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 121,
+      "post": 448
+    },
+    {
+      "body_id": 21422,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 129,
+      "post": 429
+    },
+    {
+      "body_id": 21491,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 115,
+      "post": 447
+    },
+    {
+      "body_id": 21653,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 126,
+      "post": 439
+    },
+    {
+      "body_id": 21682,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 119,
+      "post": 436
+    },
+    {
+      "body_id": 22007,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 112,
+      "post": 289
+    },
+    {
+      "body_id": 22180,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 126,
+      "post": 437
+    },
+    {
+      "body_id": 22314,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 103,
+      "post": 315
+    },
+    {
+      "body_id": 22613,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 118,
+      "post": 449
+    },
+    {
+      "body_id": 22631,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 96,
+      "post": 433
+    },
+    {
+      "body_id": 22934,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 177,
+      "post": 444
+    },
+    {
+      "body_id": 23074,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 127,
+      "post": 448
+    },
+    {
+      "body_id": 23207,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 103,
+      "post": 472
+    },
+    {
+      "body_id": 23414,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 122,
+      "post": 410
+    },
+    {
+      "body_id": 23481,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 115,
+      "post": 459
+    },
+    {
+      "body_id": 24116,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 110,
+      "post": 439
+    },
+    {
+      "body_id": 24916,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 113,
+      "post": 439
+    },
+    {
+      "body_id": 26950,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 116,
+      "post": 446
+    },
+    {
+      "body_id": 27357,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 123,
+      "post": 434
+    },
+    {
+      "body_id": 28518,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 114,
+      "post": 419
+    },
+    {
+      "body_id": 29605,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 119,
+      "post": 262
+    },
+    {
+      "body_id": 29946,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 123,
+      "post": 428
+    },
+    {
+      "body_id": 30599,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 127,
+      "post": 437
+    },
+    {
+      "body_id": 30658,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 118,
+      "post": 450
+    },
+    {
+      "body_id": 30723,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 116,
+      "post": 469
+    },
+    {
+      "body_id": 30996,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 111,
+      "post": 448
+    },
+    {
+      "body_id": 32187,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 116,
+      "post": 177
+    },
+    {
+      "body_id": 32581,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 110,
+      "post": 436
+    },
+    {
+      "body_id": 32595,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 118,
+      "post": 451
+    },
+    {
+      "body_id": 34528,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 106,
+      "post": 437
+    },
+    {
+      "body_id": 35139,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 118,
+      "post": 262
+    },
+    {
+      "body_id": 37093,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 120,
+      "post": 136
+    },
+    {
+      "body_id": 39568,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 130,
+      "post": 452
+    },
+    {
+      "body_id": 46625,
+      "type": "L1",
+      "instance": "L1_R",
+      "soma_side": "R",
+      "pre": 100,
+      "post": 79
+    },
+    {
+      "body_id": 512051,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 130,
+      "post": 251
+    },
+    {
+      "body_id": 516061,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 115,
+      "post": 473
+    },
+    {
+      "body_id": 516729,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 111,
+      "post": 450
+    },
+    {
+      "body_id": 532462,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 136,
+      "post": 400
+    },
+    {
+      "body_id": 533351,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 109,
+      "post": 451
+    },
+    {
+      "body_id": 550939,
+      "type": "L1",
+      "instance": "L1_L",
+      "soma_side": "L",
+      "pre": 101,
+      "post": 242
+    },
+    {
+      "body_id": 16581,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 200,
+      "post": 633
+    },
+    {
+      "body_id": 17891,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 222,
+      "post": 671
+    },
+    {
+      "body_id": 18061,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 177,
+      "post": 589
+    },
+    {
+      "body_id": 18370,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 193,
+      "post": 596
+    },
+    {
+      "body_id": 18509,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 201,
+      "post": 640
+    },
+    {
+      "body_id": 18682,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 195,
+      "post": 639
+    },
+    {
+      "body_id": 19001,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 212,
+      "post": 602
+    },
+    {
+      "body_id": 19075,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 264,
+      "post": 554
+    },
+    {
+      "body_id": 19903,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 196,
+      "post": 589
+    },
+    {
+      "body_id": 20655,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 201,
+      "post": 601
+    },
+    {
+      "body_id": 20696,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 179,
+      "post": 627
+    },
+    {
+      "body_id": 20971,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 204,
+      "post": 612
+    },
+    {
+      "body_id": 21006,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 208,
+      "post": 578
+    },
+    {
+      "body_id": 21112,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 204,
+      "post": 608
+    },
+    {
+      "body_id": 21133,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 229,
+      "post": 582
+    },
+    {
+      "body_id": 21260,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 189,
+      "post": 582
+    },
+    {
+      "body_id": 21310,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 210,
+      "post": 627
+    },
+    {
+      "body_id": 22161,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 209,
+      "post": 596
+    },
+    {
+      "body_id": 22743,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 189,
+      "post": 652
+    },
+    {
+      "body_id": 23110,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 227,
+      "post": 646
+    },
+    {
+      "body_id": 23268,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 196,
+      "post": 427
+    },
+    {
+      "body_id": 23624,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 199,
+      "post": 409
+    },
+    {
+      "body_id": 23974,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 214,
+      "post": 615
+    },
+    {
+      "body_id": 24007,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 225,
+      "post": 604
+    },
+    {
+      "body_id": 24201,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 212,
+      "post": 623
+    },
+    {
+      "body_id": 24758,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 202,
+      "post": 657
+    },
+    {
+      "body_id": 24990,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 179,
+      "post": 612
+    },
+    {
+      "body_id": 25095,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 202,
+      "post": 618
+    },
+    {
+      "body_id": 25315,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 197,
+      "post": 637
+    },
+    {
+      "body_id": 25485,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 206,
+      "post": 575
+    },
+    {
+      "body_id": 25531,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 209,
+      "post": 628
+    },
+    {
+      "body_id": 25545,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 201,
+      "post": 672
+    },
+    {
+      "body_id": 25757,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 191,
+      "post": 612
+    },
+    {
+      "body_id": 25884,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 201,
+      "post": 609
+    },
+    {
+      "body_id": 26190,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 212,
+      "post": 621
+    },
+    {
+      "body_id": 26447,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 203,
+      "post": 595
+    },
+    {
+      "body_id": 26949,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 144,
+      "post": 433
+    },
+    {
+      "body_id": 28864,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 195,
+      "post": 611
+    },
+    {
+      "body_id": 31043,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 127,
+      "post": 301
+    },
+    {
+      "body_id": 33452,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 176,
+      "post": 414
+    },
+    {
+      "body_id": 244826,
+      "type": "L2",
+      "instance": "L2_R",
+      "soma_side": "R",
+      "pre": 170,
+      "post": 610
+    },
+    {
+      "body_id": 512054,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 211,
+      "post": 375
+    },
+    {
+      "body_id": 519732,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 187,
+      "post": 442
+    },
+    {
+      "body_id": 533352,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 185,
+      "post": 634
+    },
+    {
+      "body_id": 534375,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 196,
+      "post": 605
+    },
+    {
+      "body_id": 540081,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 201,
+      "post": 646
+    },
+    {
+      "body_id": 555921,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 200,
+      "post": 311
+    },
+    {
+      "body_id": 556431,
+      "type": "L2",
+      "instance": "L2_L",
+      "soma_side": "L",
+      "pre": 192,
+      "post": 615
+    },
+    {
+      "body_id": 23303,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 90,
+      "post": 169
+    },
+    {
+      "body_id": 27625,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 83,
+      "post": 312
+    },
+    {
+      "body_id": 34961,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 89,
+      "post": 277
+    },
+    {
+      "body_id": 43022,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 106,
+      "post": 410
+    },
+    {
+      "body_id": 43393,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 77,
+      "post": 290
+    },
+    {
+      "body_id": 45851,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 89,
+      "post": 303
+    },
+    {
+      "body_id": 46663,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 109,
+      "post": 278
+    },
+    {
+      "body_id": 49197,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 91,
+      "post": 126
+    },
+    {
+      "body_id": 49651,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 84,
+      "post": 255
+    },
+    {
+      "body_id": 50474,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 89,
+      "post": 306
+    },
+    {
+      "body_id": 51240,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 77,
+      "post": 278
+    },
+    {
+      "body_id": 54775,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 78,
+      "post": 309
+    },
+    {
+      "body_id": 56107,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 73,
+      "post": 276
+    },
+    {
+      "body_id": 58212,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 74,
+      "post": 266
+    },
+    {
+      "body_id": 63041,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 88,
+      "post": 318
+    },
+    {
+      "body_id": 63243,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 90,
+      "post": 331
+    },
+    {
+      "body_id": 65065,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 80,
+      "post": 270
+    },
+    {
+      "body_id": 67470,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 122,
+      "post": 194
+    },
+    {
+      "body_id": 70226,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 97,
+      "post": 189
+    },
+    {
+      "body_id": 77396,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 75,
+      "post": 131
+    },
+    {
+      "body_id": 78232,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 87,
+      "post": 319
+    },
+    {
+      "body_id": 78324,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 70,
+      "post": 268
+    },
+    {
+      "body_id": 79960,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 90,
+      "post": 283
+    },
+    {
+      "body_id": 81115,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 94,
+      "post": 259
+    },
+    {
+      "body_id": 81508,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 78,
+      "post": 284
+    },
+    {
+      "body_id": 82519,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 93,
+      "post": 148
+    },
+    {
+      "body_id": 82873,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 111,
+      "post": 285
+    },
+    {
+      "body_id": 83900,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 79,
+      "post": 295
+    },
+    {
+      "body_id": 88646,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 75,
+      "post": 270
+    },
+    {
+      "body_id": 89198,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 102,
+      "post": 337
+    },
+    {
+      "body_id": 97551,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 97,
+      "post": 301
+    },
+    {
+      "body_id": 101634,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 78,
+      "post": 293
+    },
+    {
+      "body_id": 110445,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 73,
+      "post": 271
+    },
+    {
+      "body_id": 125828,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 82,
+      "post": 306
+    },
+    {
+      "body_id": 126047,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 79,
+      "post": 307
+    },
+    {
+      "body_id": 149329,
+      "type": "L3",
+      "instance": "L3_R",
+      "soma_side": "R",
+      "pre": 92,
+      "post": 332
+    },
+    {
+      "body_id": 220894,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 59,
+      "post": 50
+    },
+    {
+      "body_id": 513318,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 83,
+      "post": 266
+    },
+    {
+      "body_id": 515395,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 88,
+      "post": 161
+    },
+    {
+      "body_id": 516728,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 76,
+      "post": 309
+    },
+    {
+      "body_id": 532698,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 89,
+      "post": 86
+    },
+    {
+      "body_id": 540417,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 77,
+      "post": 308
+    },
+    {
+      "body_id": 543025,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 100,
+      "post": 282
+    },
+    {
+      "body_id": 545407,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 80,
+      "post": 291
+    },
+    {
+      "body_id": 547134,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 94,
+      "post": 296
+    },
+    {
+      "body_id": 547653,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 85,
+      "post": 298
+    },
+    {
+      "body_id": 548720,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 90,
+      "post": 102
+    },
+    {
+      "body_id": 550452,
+      "type": "L3",
+      "instance": "L3_L",
+      "soma_side": "L",
+      "pre": 85,
+      "post": 126
+    },
+    {
+      "body_id": 16394,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 67,
+      "post": 26
+    },
+    {
+      "body_id": 24385,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 70,
+      "post": 21
+    },
+    {
+      "body_id": 25245,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 69,
+      "post": 51
+    },
+    {
+      "body_id": 37850,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": "R",
+      "pre": 67,
+      "post": 26
+    },
+    {
+      "body_id": 46599,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": "R",
+      "pre": 96,
+      "post": 212
+    },
+    {
+      "body_id": 61428,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 70,
+      "post": 27
+    },
+    {
+      "body_id": 62264,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 74,
+      "post": 34
+    },
+    {
+      "body_id": 75311,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 100,
+      "post": 58
+    },
+    {
+      "body_id": 79144,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 134,
+      "post": 62
+    },
+    {
+      "body_id": 81286,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 89,
+      "post": 40
+    },
+    {
+      "body_id": 86821,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 94,
+      "post": 65
+    },
+    {
+      "body_id": 95486,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 75,
+      "post": 39
+    },
+    {
+      "body_id": 99076,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 105,
+      "post": 44
+    },
+    {
+      "body_id": 99298,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 94,
+      "post": 43
+    },
+    {
+      "body_id": 106241,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 76,
+      "post": 32
+    },
+    {
+      "body_id": 111864,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 101,
+      "post": 39
+    },
+    {
+      "body_id": 114750,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 68,
+      "post": 36
+    },
+    {
+      "body_id": 117246,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 76,
+      "post": 27
+    },
+    {
+      "body_id": 120673,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 68,
+      "post": 28
+    },
+    {
+      "body_id": 127408,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 69,
+      "post": 33
+    },
+    {
+      "body_id": 128178,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 69,
+      "post": 22
+    },
+    {
+      "body_id": 131738,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 65,
+      "post": 39
+    },
+    {
+      "body_id": 131820,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 44,
+      "post": 24
+    },
+    {
+      "body_id": 132065,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 71,
+      "post": 32
+    },
+    {
+      "body_id": 140288,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 44,
+      "post": 28
+    },
+    {
+      "body_id": 145741,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 49,
+      "post": 19
+    },
+    {
+      "body_id": 153107,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 50,
+      "post": 26
+    },
+    {
+      "body_id": 161919,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 38,
+      "post": 28
+    },
+    {
+      "body_id": 162249,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 74,
+      "post": 19
+    },
+    {
+      "body_id": 187626,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 48,
+      "post": 27
+    },
+    {
+      "body_id": 202937,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 37,
+      "post": 12
+    },
+    {
+      "body_id": 213272,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 33,
+      "post": 17
+    },
+    {
+      "body_id": 220955,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 24,
+      "post": 10
+    },
+    {
+      "body_id": 223529,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 24,
+      "post": 15
+    },
+    {
+      "body_id": 225294,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 29,
+      "post": 19
+    },
+    {
+      "body_id": 229898,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 18,
+      "post": 9
+    },
+    {
+      "body_id": 231740,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 28,
+      "post": 19
+    },
+    {
+      "body_id": 235602,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 32,
+      "post": 9
+    },
+    {
+      "body_id": 237524,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 21,
+      "post": 12
+    },
+    {
+      "body_id": 238540,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 24,
+      "post": 16
+    },
+    {
+      "body_id": 244302,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 28,
+      "post": 15
+    },
+    {
+      "body_id": 254774,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 19,
+      "post": 13
+    },
+    {
+      "body_id": 288917,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 26,
+      "post": 16
+    },
+    {
+      "body_id": 384145,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": null,
+      "pre": 23,
+      "post": 5
+    },
+    {
+      "body_id": 550686,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 69,
+      "post": 38
+    },
+    {
+      "body_id": 551254,
+      "type": "R1-R6",
+      "instance": "R1-R6_R",
+      "soma_side": "R",
+      "pre": 42,
+      "post": 128
+    },
+    {
+      "body_id": 556436,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 80,
+      "post": 27
+    },
+    {
+      "body_id": 953560,
+      "type": "R1-R6",
+      "instance": "R1-R6_L",
+      "soma_side": null,
+      "pre": 66,
+      "post": 34
+    }
+  ],
+  "edges": [
+    {
+      "upstream_body_id": 11369,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 11369,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 10342,
+      "downstream_type": "DNc02",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 11369,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 10705,
+      "downstream_type": "DNc02",
+      "weight": 15.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 11369,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 10342,
+      "downstream_type": "DNc02",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 10705,
+      "downstream_type": "DNc02",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 23624,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 512054,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 519732,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 555921,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 512245,
+      "upstream_type": "DNc01",
+      "downstream_body_id": 220894,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 10342,
+      "upstream_type": "DNc02",
+      "downstream_body_id": 11369,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 10342,
+      "upstream_type": "DNc02",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 13.0
+    },
+    {
+      "upstream_body_id": 10342,
+      "upstream_type": "DNc02",
+      "downstream_body_id": 10705,
+      "downstream_type": "DNc02",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 10705,
+      "upstream_type": "DNc02",
+      "downstream_body_id": 11369,
+      "downstream_type": "DNc01",
+      "weight": 10.0
+    },
+    {
+      "upstream_body_id": 10705,
+      "upstream_type": "DNc02",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 10705,
+      "upstream_type": "DNc02",
+      "downstream_body_id": 10342,
+      "downstream_type": "DNc02",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 14405,
+      "upstream_type": "L1",
+      "downstream_body_id": 34961,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 18251,
+      "upstream_type": "L1",
+      "downstream_body_id": 23110,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 18284,
+      "upstream_type": "L1",
+      "downstream_body_id": 25545,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 18284,
+      "upstream_type": "L1",
+      "downstream_body_id": 114750,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 20790,
+      "upstream_type": "L1",
+      "downstream_body_id": 22743,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 20840,
+      "upstream_type": "L1",
+      "downstream_body_id": 540081,
+      "downstream_type": "L2",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 20850,
+      "upstream_type": "L1",
+      "downstream_body_id": 556431,
+      "downstream_type": "L2",
+      "weight": 49.0
+    },
+    {
+      "upstream_body_id": 20850,
+      "upstream_type": "L1",
+      "downstream_body_id": 547134,
+      "downstream_type": "L3",
+      "weight": 11.0
+    },
+    {
+      "upstream_body_id": 20850,
+      "upstream_type": "L1",
+      "downstream_body_id": 556436,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 21298,
+      "upstream_type": "L1",
+      "downstream_body_id": 110445,
+      "downstream_type": "L3",
+      "weight": 13.0
+    },
+    {
+      "upstream_body_id": 21320,
+      "upstream_type": "L1",
+      "downstream_body_id": 18061,
+      "downstream_type": "L2",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 21402,
+      "upstream_type": "L1",
+      "downstream_body_id": 82873,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 21422,
+      "upstream_type": "L1",
+      "downstream_body_id": 18370,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 21422,
+      "upstream_type": "L1",
+      "downstream_body_id": 45851,
+      "downstream_type": "L3",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 21653,
+      "upstream_type": "L1",
+      "downstream_body_id": 25315,
+      "downstream_type": "L2",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 21682,
+      "upstream_type": "L1",
+      "downstream_body_id": 19903,
+      "downstream_type": "L2",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 21682,
+      "upstream_type": "L1",
+      "downstream_body_id": 49651,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 22007,
+      "upstream_type": "L1",
+      "downstream_body_id": 519732,
+      "downstream_type": "L2",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 22007,
+      "upstream_type": "L1",
+      "downstream_body_id": 23303,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 22007,
+      "upstream_type": "L1",
+      "downstream_body_id": 225294,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 22180,
+      "upstream_type": "L1",
+      "downstream_body_id": 22161,
+      "downstream_type": "L2",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 22180,
+      "upstream_type": "L1",
+      "downstream_body_id": 79960,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 22180,
+      "upstream_type": "L1",
+      "downstream_body_id": 127408,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 22314,
+      "upstream_type": "L1",
+      "downstream_body_id": 11369,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 22314,
+      "upstream_type": "L1",
+      "downstream_body_id": 26949,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 22314,
+      "upstream_type": "L1",
+      "downstream_body_id": 140288,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 22314,
+      "upstream_type": "L1",
+      "downstream_body_id": 145741,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 22613,
+      "upstream_type": "L1",
+      "downstream_body_id": 50474,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 22613,
+      "upstream_type": "L1",
+      "downstream_body_id": 106241,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 22613,
+      "upstream_type": "L1",
+      "downstream_body_id": 131738,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 22631,
+      "upstream_type": "L1",
+      "downstream_body_id": 21112,
+      "downstream_type": "L2",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 22631,
+      "upstream_type": "L1",
+      "downstream_body_id": 25245,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 22934,
+      "upstream_type": "L1",
+      "downstream_body_id": 543025,
+      "downstream_type": "L3",
+      "weight": 24.0
+    },
+    {
+      "upstream_body_id": 23074,
+      "upstream_type": "L1",
+      "downstream_body_id": 547653,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 23207,
+      "upstream_type": "L1",
+      "downstream_body_id": 20696,
+      "downstream_type": "L2",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 23414,
+      "upstream_type": "L1",
+      "downstream_body_id": 19075,
+      "downstream_type": "L2",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 23481,
+      "upstream_type": "L1",
+      "downstream_body_id": 24201,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 24116,
+      "upstream_type": "L1",
+      "downstream_body_id": 25095,
+      "downstream_type": "L2",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 24116,
+      "upstream_type": "L1",
+      "downstream_body_id": 88646,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 24916,
+      "upstream_type": "L1",
+      "downstream_body_id": 23974,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 24916,
+      "upstream_type": "L1",
+      "downstream_body_id": 120673,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 26950,
+      "upstream_type": "L1",
+      "downstream_body_id": 26447,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 26950,
+      "upstream_type": "L1",
+      "downstream_body_id": 81115,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 29605,
+      "upstream_type": "L1",
+      "downstream_body_id": 23624,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 29946,
+      "upstream_type": "L1",
+      "downstream_body_id": 25884,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 29946,
+      "upstream_type": "L1",
+      "downstream_body_id": 89198,
+      "downstream_type": "L3",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 29946,
+      "upstream_type": "L1",
+      "downstream_body_id": 37850,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 30599,
+      "upstream_type": "L1",
+      "downstream_body_id": 26190,
+      "downstream_type": "L2",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 30599,
+      "upstream_type": "L1",
+      "downstream_body_id": 78232,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 30658,
+      "upstream_type": "L1",
+      "downstream_body_id": 25531,
+      "downstream_type": "L2",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 30723,
+      "upstream_type": "L1",
+      "downstream_body_id": 24758,
+      "downstream_type": "L2",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 30723,
+      "upstream_type": "L1",
+      "downstream_body_id": 78324,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 30996,
+      "upstream_type": "L1",
+      "downstream_body_id": 24990,
+      "downstream_type": "L2",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 32187,
+      "upstream_type": "L1",
+      "downstream_body_id": 555921,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 32595,
+      "upstream_type": "L1",
+      "downstream_body_id": 24007,
+      "downstream_type": "L2",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 35139,
+      "upstream_type": "L1",
+      "downstream_body_id": 10705,
+      "downstream_type": "DNc02",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 37093,
+      "upstream_type": "L1",
+      "downstream_body_id": 10705,
+      "downstream_type": "DNc02",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 39568,
+      "upstream_type": "L1",
+      "downstream_body_id": 19001,
+      "downstream_type": "L2",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 39568,
+      "upstream_type": "L1",
+      "downstream_body_id": 54775,
+      "downstream_type": "L3",
+      "weight": 17.0
+    },
+    {
+      "upstream_body_id": 46625,
+      "upstream_type": "L1",
+      "downstream_body_id": 11369,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 512051,
+      "upstream_type": "L1",
+      "downstream_body_id": 512054,
+      "downstream_type": "L2",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 516729,
+      "upstream_type": "L1",
+      "downstream_body_id": 16581,
+      "downstream_type": "L2",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 516729,
+      "upstream_type": "L1",
+      "downstream_body_id": 516728,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 532462,
+      "upstream_type": "L1",
+      "downstream_body_id": 65065,
+      "downstream_type": "L3",
+      "weight": 15.0
+    },
+    {
+      "upstream_body_id": 533351,
+      "upstream_type": "L1",
+      "downstream_body_id": 533352,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 550939,
+      "upstream_type": "L1",
+      "downstream_body_id": 31043,
+      "downstream_type": "L2",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 550939,
+      "upstream_type": "L1",
+      "downstream_body_id": 77396,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 16581,
+      "upstream_type": "L2",
+      "downstream_body_id": 516729,
+      "downstream_type": "L1",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 17891,
+      "upstream_type": "L2",
+      "downstream_body_id": 97551,
+      "downstream_type": "L3",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 18061,
+      "upstream_type": "L2",
+      "downstream_body_id": 21320,
+      "downstream_type": "L1",
+      "weight": 13.0
+    },
+    {
+      "upstream_body_id": 18370,
+      "upstream_type": "L2",
+      "downstream_body_id": 21422,
+      "downstream_type": "L1",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 18370,
+      "upstream_type": "L2",
+      "downstream_body_id": 45851,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 19001,
+      "upstream_type": "L2",
+      "downstream_body_id": 39568,
+      "downstream_type": "L1",
+      "weight": 10.0
+    },
+    {
+      "upstream_body_id": 19001,
+      "upstream_type": "L2",
+      "downstream_body_id": 54775,
+      "downstream_type": "L3",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 19075,
+      "upstream_type": "L2",
+      "downstream_body_id": 23414,
+      "downstream_type": "L1",
+      "weight": 54.0
+    },
+    {
+      "upstream_body_id": 19903,
+      "upstream_type": "L2",
+      "downstream_body_id": 21682,
+      "downstream_type": "L1",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 19903,
+      "upstream_type": "L2",
+      "downstream_body_id": 49651,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 20696,
+      "upstream_type": "L2",
+      "downstream_body_id": 23207,
+      "downstream_type": "L1",
+      "weight": 10.0
+    },
+    {
+      "upstream_body_id": 20696,
+      "upstream_type": "L2",
+      "downstream_body_id": 953560,
+      "downstream_type": "R1-R6",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 21006,
+      "upstream_type": "L2",
+      "downstream_body_id": 51240,
+      "downstream_type": "L3",
+      "weight": 16.0
+    },
+    {
+      "upstream_body_id": 21112,
+      "upstream_type": "L2",
+      "downstream_body_id": 22631,
+      "downstream_type": "L1",
+      "weight": 13.0
+    },
+    {
+      "upstream_body_id": 21112,
+      "upstream_type": "L2",
+      "downstream_body_id": 25245,
+      "downstream_type": "R1-R6",
+      "weight": 15.0
+    },
+    {
+      "upstream_body_id": 22161,
+      "upstream_type": "L2",
+      "downstream_body_id": 22180,
+      "downstream_type": "L1",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 22161,
+      "upstream_type": "L2",
+      "downstream_body_id": 79960,
+      "downstream_type": "L3",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 22161,
+      "upstream_type": "L2",
+      "downstream_body_id": 127408,
+      "downstream_type": "R1-R6",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 22743,
+      "upstream_type": "L2",
+      "downstream_body_id": 20790,
+      "downstream_type": "L1",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 23110,
+      "upstream_type": "L2",
+      "downstream_body_id": 18251,
+      "downstream_type": "L1",
+      "weight": 14.0
+    },
+    {
+      "upstream_body_id": 23110,
+      "upstream_type": "L2",
+      "downstream_body_id": 149329,
+      "downstream_type": "L3",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 23268,
+      "upstream_type": "L2",
+      "downstream_body_id": 67470,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 23268,
+      "upstream_type": "L2",
+      "downstream_body_id": 187626,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 23268,
+      "upstream_type": "L2",
+      "downstream_body_id": 237524,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 23268,
+      "upstream_type": "L2",
+      "downstream_body_id": 254774,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 23624,
+      "upstream_type": "L2",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 22.0
+    },
+    {
+      "upstream_body_id": 23624,
+      "upstream_type": "L2",
+      "downstream_body_id": 29605,
+      "downstream_type": "L1",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 23624,
+      "upstream_type": "L2",
+      "downstream_body_id": 223529,
+      "downstream_type": "R1-R6",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 23974,
+      "upstream_type": "L2",
+      "downstream_body_id": 24916,
+      "downstream_type": "L1",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 23974,
+      "upstream_type": "L2",
+      "downstream_body_id": 120673,
+      "downstream_type": "R1-R6",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 24007,
+      "upstream_type": "L2",
+      "downstream_body_id": 32595,
+      "downstream_type": "L1",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 24201,
+      "upstream_type": "L2",
+      "downstream_body_id": 23481,
+      "downstream_type": "L1",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 24758,
+      "upstream_type": "L2",
+      "downstream_body_id": 30723,
+      "downstream_type": "L1",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 24758,
+      "upstream_type": "L2",
+      "downstream_body_id": 78324,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 24990,
+      "upstream_type": "L2",
+      "downstream_body_id": 30996,
+      "downstream_type": "L1",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 25095,
+      "upstream_type": "L2",
+      "downstream_body_id": 24116,
+      "downstream_type": "L1",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 25095,
+      "upstream_type": "L2",
+      "downstream_body_id": 88646,
+      "downstream_type": "L3",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 25315,
+      "upstream_type": "L2",
+      "downstream_body_id": 21653,
+      "downstream_type": "L1",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 25531,
+      "upstream_type": "L2",
+      "downstream_body_id": 30658,
+      "downstream_type": "L1",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 25545,
+      "upstream_type": "L2",
+      "downstream_body_id": 18284,
+      "downstream_type": "L1",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 25545,
+      "upstream_type": "L2",
+      "downstream_body_id": 114750,
+      "downstream_type": "R1-R6",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 25757,
+      "upstream_type": "L2",
+      "downstream_body_id": 81508,
+      "downstream_type": "L3",
+      "weight": 6.0
+    },
+    {
+      "upstream_body_id": 25884,
+      "upstream_type": "L2",
+      "downstream_body_id": 29946,
+      "downstream_type": "L1",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 25884,
+      "upstream_type": "L2",
+      "downstream_body_id": 89198,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 25884,
+      "upstream_type": "L2",
+      "downstream_body_id": 37850,
+      "downstream_type": "R1-R6",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 26190,
+      "upstream_type": "L2",
+      "downstream_body_id": 30599,
+      "downstream_type": "L1",
+      "weight": 10.0
+    },
+    {
+      "upstream_body_id": 26190,
+      "upstream_type": "L2",
+      "downstream_body_id": 78232,
+      "downstream_type": "L3",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 26447,
+      "upstream_type": "L2",
+      "downstream_body_id": 26950,
+      "downstream_type": "L1",
+      "weight": 11.0
+    },
+    {
+      "upstream_body_id": 26447,
+      "upstream_type": "L2",
+      "downstream_body_id": 81115,
+      "downstream_type": "L3",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 26949,
+      "upstream_type": "L2",
+      "downstream_body_id": 22314,
+      "downstream_type": "L1",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 26949,
+      "upstream_type": "L2",
+      "downstream_body_id": 131820,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 26949,
+      "upstream_type": "L2",
+      "downstream_body_id": 140288,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 26949,
+      "upstream_type": "L2",
+      "downstream_body_id": 161919,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 31043,
+      "upstream_type": "L2",
+      "downstream_body_id": 550939,
+      "downstream_type": "L1",
+      "weight": 11.0
+    },
+    {
+      "upstream_body_id": 31043,
+      "upstream_type": "L2",
+      "downstream_body_id": 77396,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 31043,
+      "upstream_type": "L2",
+      "downstream_body_id": 238540,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 33452,
+      "upstream_type": "L2",
+      "downstream_body_id": 77396,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 512054,
+      "upstream_type": "L2",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 16.0
+    },
+    {
+      "upstream_body_id": 512054,
+      "upstream_type": "L2",
+      "downstream_body_id": 512051,
+      "downstream_type": "L1",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 519732,
+      "upstream_type": "L2",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 519732,
+      "upstream_type": "L2",
+      "downstream_body_id": 22007,
+      "downstream_type": "L1",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 519732,
+      "upstream_type": "L2",
+      "downstream_body_id": 23303,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 519732,
+      "upstream_type": "L2",
+      "downstream_body_id": 213272,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 519732,
+      "upstream_type": "L2",
+      "downstream_body_id": 225294,
+      "downstream_type": "R1-R6",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 533352,
+      "upstream_type": "L2",
+      "downstream_body_id": 533351,
+      "downstream_type": "L1",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 533352,
+      "upstream_type": "L2",
+      "downstream_body_id": 126047,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 540081,
+      "upstream_type": "L2",
+      "downstream_body_id": 20840,
+      "downstream_type": "L1",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 555921,
+      "upstream_type": "L2",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 12.0
+    },
+    {
+      "upstream_body_id": 555921,
+      "upstream_type": "L2",
+      "downstream_body_id": 32187,
+      "downstream_type": "L1",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 555921,
+      "upstream_type": "L2",
+      "downstream_body_id": 82519,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 556431,
+      "upstream_type": "L2",
+      "downstream_body_id": 20850,
+      "downstream_type": "L1",
+      "weight": 9.0
+    },
+    {
+      "upstream_body_id": 556431,
+      "upstream_type": "L2",
+      "downstream_body_id": 547134,
+      "downstream_type": "L3",
+      "weight": 4.0
+    },
+    {
+      "upstream_body_id": 556431,
+      "upstream_type": "L2",
+      "downstream_body_id": 556436,
+      "downstream_type": "R1-R6",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 23303,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 23303,
+      "upstream_type": "L3",
+      "downstream_body_id": 519732,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 45851,
+      "upstream_type": "L3",
+      "downstream_body_id": 18370,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 49197,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 65065,
+      "upstream_type": "L3",
+      "downstream_body_id": 110445,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 67470,
+      "upstream_type": "L3",
+      "downstream_body_id": 10705,
+      "downstream_type": "DNc02",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 70226,
+      "upstream_type": "L3",
+      "downstream_body_id": 67470,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 77396,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 79960,
+      "upstream_type": "L3",
+      "downstream_body_id": 22180,
+      "downstream_type": "L1",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 81115,
+      "upstream_type": "L3",
+      "downstream_body_id": 26447,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 82519,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 89198,
+      "upstream_type": "L3",
+      "downstream_body_id": 29946,
+      "downstream_type": "L1",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 89198,
+      "upstream_type": "L3",
+      "downstream_body_id": 25884,
+      "downstream_type": "L2",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 89198,
+      "upstream_type": "L3",
+      "downstream_body_id": 37850,
+      "downstream_type": "R1-R6",
+      "weight": 8.0
+    },
+    {
+      "upstream_body_id": 97551,
+      "upstream_type": "L3",
+      "downstream_body_id": 17891,
+      "downstream_type": "L2",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 97551,
+      "upstream_type": "L3",
+      "downstream_body_id": 27625,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 110445,
+      "upstream_type": "L3",
+      "downstream_body_id": 65065,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 126047,
+      "upstream_type": "L3",
+      "downstream_body_id": 83900,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 149329,
+      "upstream_type": "L3",
+      "downstream_body_id": 23110,
+      "downstream_type": "L2",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 220894,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 515395,
+      "upstream_type": "L3",
+      "downstream_body_id": 49197,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 532698,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 540417,
+      "upstream_type": "L3",
+      "downstream_body_id": 516061,
+      "downstream_type": "L1",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 548720,
+      "upstream_type": "L3",
+      "downstream_body_id": 512245,
+      "downstream_type": "DNc01",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 550452,
+      "upstream_type": "L3",
+      "downstream_body_id": 532698,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 25245,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22631,
+      "downstream_type": "L1",
+      "weight": 61.0
+    },
+    {
+      "upstream_body_id": 25245,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 21112,
+      "downstream_type": "L2",
+      "weight": 60.0
+    },
+    {
+      "upstream_body_id": 37850,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 29946,
+      "downstream_type": "L1",
+      "weight": 60.0
+    },
+    {
+      "upstream_body_id": 37850,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 25884,
+      "downstream_type": "L2",
+      "weight": 62.0
+    },
+    {
+      "upstream_body_id": 37850,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 89198,
+      "downstream_type": "L3",
+      "weight": 47.0
+    },
+    {
+      "upstream_body_id": 106241,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22613,
+      "downstream_type": "L1",
+      "weight": 66.0
+    },
+    {
+      "upstream_body_id": 106241,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 50474,
+      "downstream_type": "L3",
+      "weight": 19.0
+    },
+    {
+      "upstream_body_id": 106241,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 131738,
+      "downstream_type": "R1-R6",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 114750,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 18284,
+      "downstream_type": "L1",
+      "weight": 63.0
+    },
+    {
+      "upstream_body_id": 114750,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 25545,
+      "downstream_type": "L2",
+      "weight": 64.0
+    },
+    {
+      "upstream_body_id": 117246,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 63041,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 120673,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 24916,
+      "downstream_type": "L1",
+      "weight": 61.0
+    },
+    {
+      "upstream_body_id": 120673,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23974,
+      "downstream_type": "L2",
+      "weight": 64.0
+    },
+    {
+      "upstream_body_id": 127408,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22180,
+      "downstream_type": "L1",
+      "weight": 61.0
+    },
+    {
+      "upstream_body_id": 127408,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22161,
+      "downstream_type": "L2",
+      "weight": 65.0
+    },
+    {
+      "upstream_body_id": 127408,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 79960,
+      "downstream_type": "L3",
+      "weight": 21.0
+    },
+    {
+      "upstream_body_id": 131738,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22613,
+      "downstream_type": "L1",
+      "weight": 59.0
+    },
+    {
+      "upstream_body_id": 131738,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 50474,
+      "downstream_type": "L3",
+      "weight": 21.0
+    },
+    {
+      "upstream_body_id": 131738,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 106241,
+      "downstream_type": "R1-R6",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 131820,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22314,
+      "downstream_type": "L1",
+      "weight": 34.0
+    },
+    {
+      "upstream_body_id": 131820,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 26949,
+      "downstream_type": "L2",
+      "weight": 36.0
+    },
+    {
+      "upstream_body_id": 140288,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22314,
+      "downstream_type": "L1",
+      "weight": 38.0
+    },
+    {
+      "upstream_body_id": 140288,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 26949,
+      "downstream_type": "L2",
+      "weight": 37.0
+    },
+    {
+      "upstream_body_id": 145741,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22314,
+      "downstream_type": "L1",
+      "weight": 45.0
+    },
+    {
+      "upstream_body_id": 145741,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 26949,
+      "downstream_type": "L2",
+      "weight": 41.0
+    },
+    {
+      "upstream_body_id": 153107,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22314,
+      "downstream_type": "L1",
+      "weight": 43.0
+    },
+    {
+      "upstream_body_id": 153107,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 26949,
+      "downstream_type": "L2",
+      "weight": 42.0
+    },
+    {
+      "upstream_body_id": 161919,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22314,
+      "downstream_type": "L1",
+      "weight": 35.0
+    },
+    {
+      "upstream_body_id": 161919,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 26949,
+      "downstream_type": "L2",
+      "weight": 32.0
+    },
+    {
+      "upstream_body_id": 162249,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 63243,
+      "downstream_type": "L3",
+      "weight": 21.0
+    },
+    {
+      "upstream_body_id": 187626,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23268,
+      "downstream_type": "L2",
+      "weight": 44.0
+    },
+    {
+      "upstream_body_id": 187626,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 67470,
+      "downstream_type": "L3",
+      "weight": 7.0
+    },
+    {
+      "upstream_body_id": 202937,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22007,
+      "downstream_type": "L1",
+      "weight": 36.0
+    },
+    {
+      "upstream_body_id": 202937,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 519732,
+      "downstream_type": "L2",
+      "weight": 34.0
+    },
+    {
+      "upstream_body_id": 202937,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23303,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 213272,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22007,
+      "downstream_type": "L1",
+      "weight": 32.0
+    },
+    {
+      "upstream_body_id": 213272,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 519732,
+      "downstream_type": "L2",
+      "weight": 28.0
+    },
+    {
+      "upstream_body_id": 213272,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23303,
+      "downstream_type": "L3",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 220955,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 35139,
+      "downstream_type": "L1",
+      "weight": 24.0
+    },
+    {
+      "upstream_body_id": 223529,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 29605,
+      "downstream_type": "L1",
+      "weight": 24.0
+    },
+    {
+      "upstream_body_id": 223529,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23624,
+      "downstream_type": "L2",
+      "weight": 23.0
+    },
+    {
+      "upstream_body_id": 225294,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 22007,
+      "downstream_type": "L1",
+      "weight": 28.0
+    },
+    {
+      "upstream_body_id": 225294,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 519732,
+      "downstream_type": "L2",
+      "weight": 29.0
+    },
+    {
+      "upstream_body_id": 225294,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23303,
+      "downstream_type": "L3",
+      "weight": 5.0
+    },
+    {
+      "upstream_body_id": 229898,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 35139,
+      "downstream_type": "L1",
+      "weight": 18.0
+    },
+    {
+      "upstream_body_id": 231740,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 35139,
+      "downstream_type": "L1",
+      "weight": 25.0
+    },
+    {
+      "upstream_body_id": 235602,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 29605,
+      "downstream_type": "L1",
+      "weight": 26.0
+    },
+    {
+      "upstream_body_id": 235602,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23624,
+      "downstream_type": "L2",
+      "weight": 31.0
+    },
+    {
+      "upstream_body_id": 235602,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 223529,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 237524,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23268,
+      "downstream_type": "L2",
+      "weight": 20.0
+    },
+    {
+      "upstream_body_id": 237524,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 67470,
+      "downstream_type": "L3",
+      "weight": 2.0
+    },
+    {
+      "upstream_body_id": 238540,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 550939,
+      "downstream_type": "L1",
+      "weight": 20.0
+    },
+    {
+      "upstream_body_id": 238540,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 31043,
+      "downstream_type": "L2",
+      "weight": 21.0
+    },
+    {
+      "upstream_body_id": 238540,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 77396,
+      "downstream_type": "L3",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 244302,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 35139,
+      "downstream_type": "L1",
+      "weight": 27.0
+    },
+    {
+      "upstream_body_id": 254774,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23268,
+      "downstream_type": "L2",
+      "weight": 18.0
+    },
+    {
+      "upstream_body_id": 254774,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 67470,
+      "downstream_type": "L3",
+      "weight": 3.0
+    },
+    {
+      "upstream_body_id": 288917,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 35139,
+      "downstream_type": "L1",
+      "weight": 25.0
+    },
+    {
+      "upstream_body_id": 384145,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 35139,
+      "downstream_type": "L1",
+      "weight": 22.0
+    },
+    {
+      "upstream_body_id": 384145,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 229898,
+      "downstream_type": "R1-R6",
+      "weight": 1.0
+    },
+    {
+      "upstream_body_id": 556436,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 20850,
+      "downstream_type": "L1",
+      "weight": 61.0
+    },
+    {
+      "upstream_body_id": 556436,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 556431,
+      "downstream_type": "L2",
+      "weight": 61.0
+    },
+    {
+      "upstream_body_id": 556436,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 547134,
+      "downstream_type": "L3",
+      "weight": 24.0
+    },
+    {
+      "upstream_body_id": 953560,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 23207,
+      "downstream_type": "L1",
+      "weight": 60.0
+    },
+    {
+      "upstream_body_id": 953560,
+      "upstream_type": "R1-R6",
+      "downstream_body_id": 20696,
+      "downstream_type": "L2",
+      "weight": 63.0
+    }
+  ],
+  "limitations": [
+    "This is a selected neuron-level subgraph, not the complete connectome.",
+    "The selection favors neurons with strong internal edge weight in this slice.",
+    "Pixel-to-neuron and descending-neuron-to-action mappings remain engineering choices."
+  ]
+}

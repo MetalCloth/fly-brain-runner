@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "source": {
+    "dataset": "male-cns:v1.0",
+    "server": "https://neuprint.janelia.org",
+    "api": "https://neuprint.janelia.org/api/custom/custom",
+    "download_page": "https://male-cns.janelia.org/download/",
+    "retrieved_on": "2026-09-14"
+  },
+  "selection": {
+    "types": [
+      "R1-R6",
+      "L1",
+      "L2",
+      "L3",
+      "DNc01",
+      "DNc02"
+    ],
+    "reason": "A deliberately small visual-to-descending slice: R1-R6 is the visual input class, L1/L2/L3 are optic-lobe intrinsic types, and DNc01/DNc02 are descending output types.",
+    "aggregation": "one node per published neuron type; edges are summed by type pair"
+  },
+  "queries": {
+    "nodes": "MATCH (n:Neuron)\nWHERE n.type IN ['R1-R6', 'L1', 'L2', 'L3', 'DNc01', 'DNc02']\nRETURN n.type AS type,\n       n.superclass AS superclass,\n       n.class AS neuron_class,\n       count(n) AS neuron_count,\n       sum(n.pre) AS total_pre,\n       sum(n.post) AS total_post\nORDER BY type",
+    "edges": "MATCH (a:Neuron)-[c:ConnectsTo]->(b:Neuron)\nWHERE a.type IN ['R1-R6', 'L1', 'L2', 'L3', 'DNc01', 'DNc02'] AND b.type IN ['R1-R6', 'L1', 'L2', 'L3', 'DNc01', 'DNc02']\nRETURN a.type AS upstream_type,\n       b.type AS downstream_type,\n       sum(c.weight) AS total_weight,\n       count(*) AS body_edges\nORDER BY upstream_type, total_weight DESC, downstream_type"
+  },
+  "nodes": [
+    {
+      "type": "DNc01",
+      "superclass": "descending_neuron",
+      "neuron_class": null,
+      "neuron_count": 2,
+      "total_pre": 3533,
+      "total_post": 4014
+    },
+    {
+      "type": "DNc02",
+      "superclass": "descending_neuron",
+      "neuron_class": null,
+      "neuron_count": 2,
+      "total_pre": 3731,
+      "total_post": 3762
+    },
+    {
+      "type": "L1",
+      "superclass": "ol_intrinsic",
+      "neuron_class": null,
+      "neuron_count": 1776,
+      "total_pre": 192328,
+      "total_post": 368682
+    },
+    {
+      "type": "L2",
+      "superclass": "ol_intrinsic",
+      "neuron_class": null,
+      "neuron_count": 1779,
+      "total_pre": 302652,
+      "total_post": 559331
+    },
+    {
+      "type": "L3",
+      "superclass": "ol_intrinsic",
+      "neuron_class": null,
+      "neuron_count": 1772,
+      "total_pre": 158689,
+      "total_post": 253904
+    },
+    {
+      "type": "R1-R6",
+      "superclass": "ol_sensory",
+      "neuron_class": "visual",
+      "neuron_count": 3377,
+      "total_pre": 132308,
+      "total_post": 69312
+    }
+  ],
+  "edges": [
+    {
+      "upstream_type": "DNc01",
+      "downstream_type": "DNc02",
+      "total_weight": 30,
+      "body_edges": 4
+    },
+    {
+      "upstream_type": "DNc01",
+      "downstream_type": "L2",
+      "total_weight": 16,
+      "body_edges": 5
+    },
+    {
+      "upstream_type": "DNc01",
+      "downstream_type": "L1",
+      "total_weight": 8,
+      "body_edges": 8
+    },
+    {
+      "upstream_type": "DNc01",
+      "downstream_type": "DNc01",
+      "total_weight": 7,
+      "body_edges": 2
+    },
+    {
+      "upstream_type": "DNc01",
+      "downstream_type": "L3",
+      "total_weight": 4,
+      "body_edges": 3
+    },
+    {
+      "upstream_type": "DNc02",
+      "downstream_type": "DNc01",
+      "total_weight": 26,
+      "body_edges": 4
+    },
+    {
+      "upstream_type": "DNc02",
+      "downstream_type": "L1",
+      "total_weight": 7,
+      "body_edges": 7
+    },
+    {
+      "upstream_type": "DNc02",
+      "downstream_type": "DNc02",
+      "total_weight": 6,
+      "body_edges": 2
+    },
+    {
+      "upstream_type": "DNc02",
+      "downstream_type": "L2",
+      "total_weight": 4,
+      "body_edges": 3
+    },
+    {
+      "upstream_type": "L1",
+      "downstream_type": "L2",
+      "total_weight": 2277,
+      "body_edges": 856
+    },
+    {
+      "upstream_type": "L1",
+      "downstream_type": "R1-R6",
+      "total_weight": 1636,
+      "body_edges": 1012
+    },
+    {
+      "upstream_type": "L1",
+      "downstream_type": "L3",
+      "total_weight": 740,
+      "body_edges": 345
+    },
+    {
+      "upstream_type": "L1",
+      "downstream_type": "L1",
+      "total_weight": 31,
+      "body_edges": 17
+    },
+    {
+      "upstream_type": "L1",
+      "downstream_type": "DNc01",
+      "total_weight": 2,
+      "body_edges": 2
+    },
+    {
+      "upstream_type": "L1",
+      "downstream_type": "DNc02",
+      "total_weight": 2,
+      "body_edges": 2
+    },
+    {
+      "upstream_type": "L2",
+      "downstream_type": "R1-R6",
+      "total_weight": 6487,
+      "body_edges": 2505
+    },
+    {
+      "upstream_type": "L2",
+      "downstream_type": "L1",
+      "total_weight": 3799,
+      "body_edges": 1089
+    },
+    {
+      "upstream_type": "L2",
+      "downstream_type": "L3",
+      "total_weight": 1458,
+      "body_edges": 614
+    },
+    {
+      "upstream_type": "L2",
+      "downstream_type": "L2",
+      "total_weight": 68,
+      "body_edges": 33
+    },
+    {
+      "upstream_type": "L2",
+      "downstream_type": "DNc01",
+      "total_weight": 51,
+      "body_edges": 4
+    },
+    {
+      "upstream_type": "L3",
+      "downstream_type": "L3",
+      "total_weight": 587,
+      "body_edges": 464
+    },
+    {
+      "upstream_type": "L3",
+      "downstream_type": "L1",
+      "total_weight": 278,
+      "body_edges": 168
+    },
+    {
+      "upstream_type": "L3",
+      "downstream_type": "L2",
+      "total_weight": 269,
+      "body_edges": 172
+    },
+    {
+      "upstream_type": "L3",
+      "downstream_type": "R1-R6",
+      "total_weight": 152,
+      "body_edges": 93
+    },
+    {
+      "upstream_type": "L3",
+      "downstream_type": "DNc01",
+      "total_weight": 8,
+      "body_edges": 7
+    },
+    {
+      "upstream_type": "L3",
+      "downstream_type": "DNc02",
+      "total_weight": 1,
+      "body_edges": 1
+    },
+    {
+      "upstream_type": "R1-R6",
+      "downstream_type": "L2",
+      "total_weight": 107646,
+      "body_edges": 3280
+    },
+    {
+      "upstream_type": "R1-R6",
+      "downstream_type": "L1",
+      "total_weight": 103405,
+      "body_edges": 3280
+    },
+    {
+      "upstream_type": "R1-R6",
+      "downstream_type": "L3",
+      "total_weight": 23510,
+      "body_edges": 3076
+    },
+    {
+      "upstream_type": "R1-R6",
+      "downstream_type": "R1-R6",
+      "total_weight": 1108,
+      "body_edges": 582
+    }
+  ],
+  "limitations": [
+    "This is a type-level reduction, not the complete neuron-by-neuron graph.",
+    "The manifest contains wiring statistics, not a full neural simulator.",
+    "Mapping pixels to R1-R6 and mapping descending activity to game actions are engineering choices."
+  ]
+}
