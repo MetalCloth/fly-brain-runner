@@ -57,6 +57,7 @@ def main() -> None:
     parser.add_argument("--confidence", type=float, default=0.55)
     parser.add_argument("--cooldown-ms", type=float, default=180.0)
     parser.add_argument("--start-delay", type=float, default=3.0)
+    parser.add_argument("--active-timeout", type=float, default=30.0)
     parser.add_argument("--log", type=Path)
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
@@ -66,8 +67,11 @@ def main() -> None:
         or not 0 <= args.confidence <= 1
         or args.cooldown_ms < 0
         or args.start_delay < 0
+        or args.active_timeout <= 0
     ):
-        parser.error("invalid steps, fps, confidence, cooldown-ms, or start-delay")
+        parser.error(
+            "invalid steps, fps, confidence, cooldown-ms, start-delay, or active-timeout"
+        )
     if not args.checkpoint.is_file():
         raise SystemExit(f"checkpoint not found: {args.checkpoint}")
     if args.region:
@@ -109,14 +113,26 @@ def main() -> None:
         mode = "EXECUTE" if args.execute else "WATCH ONLY"
         print(f"{mode}: {args.steps} steps, history={history}, game_clip={clip}")
         if args.execute:
-            print("After the delay, click the game and make sure a run is active. Escape stops.")
+            print("Start or restart the game during or after the delay; active gameplay is detected automatically. Escape stops.")
         else:
-            print("No game input will be sent. Escape stops the watcher.")
+            print("No game input will be sent. Start a run during or after the delay. Escape stops the watcher.")
         time.sleep(args.start_delay)
 
         frames: deque[np.ndarray] = deque(maxlen=history)
         last_sent = 0.0
         period = 1.0 / args.fps
+        print(f"waiting up to {args.active_timeout:.0f}s for active gameplay...")
+        active_deadline = time.monotonic() + args.active_timeout
+        while not stop and time.monotonic() < active_deadline:
+            frame = resize_frame(decode_image_rgb(page.capture_image(clip)))
+            if is_gameplay_frame(frame):
+                print("active gameplay detected; starting policy steps")
+                break
+            time.sleep(min(0.2, max(0.0, active_deadline - time.monotonic())))
+        else:
+            raise SystemExit(
+                "timed out waiting for active gameplay; start the run and try again"
+            )
         next_tick = time.monotonic()
         with log_path.open("w", encoding="utf-8") as log:
             for step in range(args.steps):

@@ -723,6 +723,9 @@ checkpoint and the Android path. Reinforcement learning comes later, after
 we can reliably observe browser score/death signals; the first real step is
 human behavior cloning.
 
+The controller waits up to 30 seconds for the active gameplay HUD before
+counting policy steps. Menu and death screens remain input-gated.
+
 ## Watch the controller locally
 
 To see the trained controller act in the toy game, run:
