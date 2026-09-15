@@ -11,7 +11,9 @@ from browser_pipeline import ACTIONS, load_frame, load_sessions
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path, default=Path("results/browser_dataset"))
+    parser.add_argument(
+        "--data-dir", type=Path, default=Path("results/browser_dataset_poki")
+    )
     args = parser.parse_args()
     sessions = load_sessions(args.data_dir)
     if not sessions:

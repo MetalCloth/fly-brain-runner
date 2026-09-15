@@ -247,6 +247,12 @@ fly connectome enters the project.
 - `train_fly_cns_hybrid.py` / `evaluate_fly_cns_hybrid.py` — audit a bounded
   residual branch beside the selected near-field policy.
 - `fly_cns_hybrid_check.py` — check base fallback and graph-path connectivity.
+- `browser_cdp.py` — controlled Brave/CDP page bridge for the Poki game.
+- `browser_pipeline.py`, `browser_model.py` — browser frame format and policy.
+- `record_browser_game.py` — record human browser play with page-level key labels.
+- `browser_dataset_check.py` — validate browser recordings and action balance.
+- `train_browser_bc.py` — train the browser behavior-cloning checkpoint.
+- `run_browser_policy.py` — watch or explicitly execute the browser checkpoint.
 - `android_bridge.py` — small ADB screen-capture and gesture bridge.
 - `android_check.py` — test the ADB command mapping without a phone.
 - `capture_android_frame.py` — save one phone screenshot for viewport calibration.
@@ -655,39 +661,37 @@ the toy-trained checkpoint understands the real game's visuals.
 ## Browser-game path (Poki)
 
 For the online Poki version, use the browser pipeline rather than the Android
-scripts. It records your real keyboard actions with the game image, trains a
-separate five-action policy, and keeps live control watch-only unless
-`--execute` is explicitly supplied.
+scripts. It opens a controlled Brave window, records key events inside the
+game page (including its iframe) with screenshots, trains a separate
+five-action policy, and keeps live control watch-only unless `--execute` is
+explicitly supplied. This works on Wayland/Hyprland without global X11 key
+capture.
 
-Install the two capture/input helpers once:
+Install the browser bridge once:
 
 ```bash
 ./.venv/bin/python -m pip install -r requirements.txt
 ```
 
-The game rectangle is `left,top,width,height` in screen pixels. For the
-provided 1808x1018 screenshot, the starting estimate is `271,130,1031,581`;
-adjust it if the browser window moves.
-
 Record while playing manually:
 
 ```bash
 ./.venv/bin/python record_browser_game.py \
-  --region 271,130,1031,581 \
   --duration 120 --fps 15 \
-  --output-dir results/browser_dataset
+  --output-dir results/browser_dataset_poki
 ```
 
-Click the game, start a run, and use `Esc` to stop recording. The recorder
-does not send game input. Use several runs, including recovery situations;
-the labels are `noop`, `left`, `right`, `jump`, and `roll`.
+The script launches a separate Brave profile. Click the game, start a run, and
+use `Escape` to stop recording. The recorder does not send game input. Use
+several runs, including recovery situations; the labels are `noop`, `left`,
+`right`, `jump`, and `roll`.
 
 Check and train the browser policy:
 
 ```bash
-./.venv/bin/python browser_dataset_check.py --data-dir results/browser_dataset
+./.venv/bin/python browser_dataset_check.py --data-dir results/browser_dataset_poki
 ./.venv/bin/python train_browser_bc.py \
-  --data-dir results/browser_dataset \
+  --data-dir results/browser_dataset_poki \
   --output-dir results/browser_bc_v1
 ```
 
@@ -696,7 +700,7 @@ Watch the learned policy before allowing it to press keys:
 ```bash
 ./.venv/bin/python run_browser_policy.py \
   results/browser_bc_v1/browser_policy_best.pt \
-  --region 271,130,1031,581 --steps 300
+  --steps 300
 ```
 
 Only after a good watch-only run, start a short live test with the game
@@ -705,7 +709,7 @@ already active:
 ```bash
 ./.venv/bin/python run_browser_policy.py \
   results/browser_bc_v1/browser_policy_best.pt \
-  --region 271,130,1031,581 --steps 100 --execute
+  --steps 100 --execute
 ```
 
 Press `Esc` to stop. This browser checkpoint is separate from the toy-game

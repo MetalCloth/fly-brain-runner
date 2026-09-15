@@ -3,10 +3,7 @@
 from __future__ import annotations
 
 import json
-import os
-import shutil
 import struct
-import subprocess
 import zlib
 from dataclasses import dataclass
 from pathlib import Path
@@ -53,22 +50,6 @@ def resize_nearest(frame: np.ndarray, size: tuple[int, int] = FRAME_SIZE) -> np.
         (np.arange(target_width) * width // target_width), width - 1
     )
     return frame[rows[:, None], columns[None, :]].astype(np.uint8, copy=True)
-
-
-def capture_rgb(capturer: object, region: tuple[int, int, int, int]) -> np.ndarray:
-    """Capture one screen region using the selected desktop backend."""
-
-    if hasattr(capturer, "grab_rgb"):
-        return capturer.grab_rgb(region)
-
-    left, top, width, height = region
-    shot = np.asarray(
-        capturer.grab({"left": left, "top": top, "width": width, "height": height})
-    )
-    if shot.ndim != 3 or shot.shape[2] < 3:
-        raise ValueError(f"screen capture must be HxWxBGRA, got {shot.shape}")
-    # mss returns BGRA; the policy consumes RGB.
-    return shot[:, :, :3][:, :, ::-1].copy()
 
 
 def decode_png_rgb(data: bytes) -> np.ndarray:
@@ -147,73 +128,6 @@ def decode_png_rgb(data: bytes) -> np.ndarray:
     return pixels[:, :, :3].copy()
 
 
-class ScreenCapturer:
-    """Capture through Wayland's grim, falling back to mss on X11."""
-
-    def __init__(self) -> None:
-        self._mss = None
-        self._backend = "grim" if os.environ.get("WAYLAND_DISPLAY") and shutil.which("grim") else "mss"
-
-    def __enter__(self) -> "ScreenCapturer":
-        return self
-
-    def __exit__(self, *_exc) -> None:
-        if self._mss is not None:
-            self._mss.close()
-            self._mss = None
-
-    def _grab_grim(self, region: tuple[int, int, int, int]) -> np.ndarray:
-        left, top, width, height = region
-        result = subprocess.run(
-            [
-                "grim",
-                "-g",
-                f"{left},{top} {width}x{height}",
-                "-l",
-                "1",
-                "-",
-            ],
-            capture_output=True,
-            timeout=5.0,
-            check=False,
-        )
-        if result.returncode:
-            detail = result.stderr.decode(errors="replace").strip()
-            raise RuntimeError(f"grim capture failed: {detail or result.returncode}")
-        return decode_png_rgb(result.stdout)
-
-    def _grab_mss(self, region: tuple[int, int, int, int]) -> np.ndarray:
-        if self._mss is None:
-            try:
-                import mss
-            except ImportError as error:
-                raise RuntimeError("mss is not installed and grim is unavailable") from error
-            self._mss = mss.mss()
-        left, top, width, height = region
-        shot = np.asarray(
-            self._mss.grab(
-                {"left": left, "top": top, "width": width, "height": height}
-            )
-        )
-        if shot.ndim != 3 or shot.shape[2] < 3:
-            raise ValueError(f"screen capture must be HxWxBGRA, got {shot.shape}")
-        return shot[:, :, :3][:, :, ::-1].copy()
-
-    def grab_rgb(self, region: tuple[int, int, int, int]) -> np.ndarray:
-        if self._backend == "grim":
-            try:
-                return self._grab_grim(region)
-            except Exception as grim_error:
-                self._backend = "mss"
-                try:
-                    return self._grab_mss(region)
-                except Exception as mss_error:
-                    raise RuntimeError(
-                        f"screen capture failed via grim ({grim_error}) and mss ({mss_error})"
-                    ) from grim_error
-        return self._grab_mss(region)
-
-
 @dataclass(frozen=True)
 class BrowserSample:
     """One labeled frame with its temporal context."""
@@ -228,7 +142,10 @@ class BrowserSample:
 def load_frame(path: Path) -> np.ndarray:
     """Load and validate one recorder-produced 84x84 RGB frame."""
 
-    frame = np.load(path, allow_pickle=False)
+    if path.suffix.lower() == ".png":
+        frame = resize_nearest(decode_png_rgb(path.read_bytes()))
+    else:
+        frame = np.load(path, allow_pickle=False)
     if frame.shape != (*FRAME_SIZE, 3) or frame.dtype != np.uint8:
         raise ValueError(f"invalid browser frame {path}: {frame.shape} {frame.dtype}")
     return frame

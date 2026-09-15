@@ -4,6 +4,7 @@ __pycache__/
 
 # Local browser data and model runs.
 results/browser_dataset/
+results/browser_dataset_poki/
 results/browser_runs/
 results/browser_bc_v1/
 

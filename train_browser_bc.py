@@ -91,7 +91,9 @@ def train_epoch(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path, default=Path("results/browser_dataset"))
+    parser.add_argument(
+        "--data-dir", type=Path, default=Path("results/browser_dataset_poki")
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("results/browser_bc_v1"))
     parser.add_argument("--history", type=int, default=4)
     parser.add_argument("--epochs", type=int, default=12)
